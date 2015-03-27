@@ -1,8 +1,13 @@
-﻿using System;
+﻿// 
+// Copyright (c) 2005-2011 TargetProcess. All rights reserved.
+// TargetProcess proprietary/confidential. Use is subject to license terms. Redistribution of this file is strictly forbidden.
+// 
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Tp.Core.Annotations;
+using Tp.Core.Functional.Annotations;
 
 namespace Tp.Core
 {
@@ -29,11 +34,13 @@ namespace Tp.Core
 			return v == null ? Maybe<T>.Nothing : Just(v);
 		}
 
+
 		[DebuggerStepThrough]
 		public static Maybe<T> Try<T>([InstantHandle] Func<T> action)
 		{
 			return Core.Try.Create(action).ToMaybe();
 		}
+
 
 		public delegate bool TryDelegate<in TArg, TResult>(TArg value, out TResult result);
 
@@ -287,6 +294,7 @@ namespace Tp.Core
 		{
 			return !Equals(left, right);
 		}
+
 
 		[DebuggerStepThrough]
 		internal Maybe(T value)

@@ -55,18 +55,21 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Annotations.cs" />
-    <Compile Include="Either.cs" />
-    <Compile Include="EnumerableExtensions.cs" />
-    <Compile Include="IMaybe.cs" />
-    <Compile Include="Maybe.cs" />
-    <Compile Include="MaybeEnumerableExtensions.cs" />
-    <Compile Include="Nothing.cs" />
-    <Compile Include="NullableExtensions.cs" />
-    <Compile Include="Try.cs" />
-    <Compile Include="TryExtensions.cs" />
+    <Compile Include="src\Annotations.cs" />
+    <Compile Include="src\Either.cs" />
+    <Compile Include="src\EnumerableExtensions.cs" />
+    <Compile Include="src\IMaybe.cs" />
+    <Compile Include="src\Maybe.cs" />
+    <Compile Include="src\MaybeEnumerableExtensions.cs" />
+    <Compile Include="src\Nothing.cs" />
+    <Compile Include="src\NullableExtensions.cs" />
+    <Compile Include="src\Try.cs" />
+    <Compile Include="src\TryExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="NuGet.exe" />
+    <None Include="NuGet.config" />
+    <None Include="Package.nuspec" />
     <None Include="TpPublic.snk" />
   </ItemGroup>
   <ItemGroup />

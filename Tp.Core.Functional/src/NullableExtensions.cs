@@ -14,6 +14,7 @@ namespace System
 			return value.HasValue ? func(value.Value) : (TTo?)null;
 		}
 
+
 		public static TTo? Bind<T, TTo>(this T? value, Func<T, TTo?> func)
 			where T : struct
 			where TTo : struct

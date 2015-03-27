@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using Tp.Core.Annotations;
+using Tp.Core.Functional.Annotations;
 
 namespace Tp.Core
 {
@@ -73,8 +73,11 @@ namespace Tp.Core
 							{
 								throw new InvalidOperationException("The input sequence contains more than one element.");
 							}
+							else
+							{
+								result = Maybe.Nothing;
+							}
 						}
-
 						result = Maybe.Just(current);
 					}
 				}

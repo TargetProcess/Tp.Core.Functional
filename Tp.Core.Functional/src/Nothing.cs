@@ -5,11 +5,15 @@ namespace Tp.Core
 {
 	public struct Nothing : IEquatable<Nothing>, IMaybe
 	{
+
+
 		[DebuggerStepThrough]
 		public override int GetHashCode()
 		{
 			return 0;
 		}
+
+
 
 		[DebuggerStepThrough]
 		public static bool operator ==(Nothing left, Nothing right)
@@ -28,6 +32,7 @@ namespace Tp.Core
 			[DebuggerStepThrough]
 			get { return false; }
 		}
+
 
 		public object Value
 		{
@@ -53,5 +58,7 @@ namespace Tp.Core
 		{
 			return "Nothing";
 		}
+
+
 	}
 }

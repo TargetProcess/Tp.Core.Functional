@@ -1,4 +1,9 @@
-﻿using System.Collections.Generic;
+﻿// 
+// Copyright (c) 2005-2014 TargetProcess. All rights reserved.
+// TargetProcess proprietary/confidential. Use is subject to license terms. Redistribution of this file is strictly forbidden.
+// 
+
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Tp.Core
