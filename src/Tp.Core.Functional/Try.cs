@@ -1,5 +1,5 @@
 ﻿using System;
-using Tp.Core.Functional.Annotations;
+using Tp.Core.Annotations;
 
 namespace Tp.Core
 {
@@ -22,7 +22,6 @@ namespace Tp.Core
 			return new Success<T>(value);
 		}
 	}
-
 
 	//// ReSharper disable InconsistentNaming
 	public interface Try<T>

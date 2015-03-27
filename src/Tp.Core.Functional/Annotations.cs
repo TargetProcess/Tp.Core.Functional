@@ -16,7 +16,8 @@
 
 using System;
 
-namespace Tp.Core.Functional.Annotations
+// ReSharper disable once CheckNamespace
+namespace Tp.Core.Annotations
 {
 	/// <summary>
 	/// Indicates that marked element should be localized or not.
