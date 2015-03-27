@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Tp.Core.Functional</id>
+    <version>0.1</version>
+    <owners>TargetProcess</owners>
+    <authors>TargetProcess</authors>
+    <description>
+      This package includes implementaion of Maybe, Try, Either with set of utility extension methods.
+    </description>
+    <summary>
+      This package includes implementaion of Maybe, Try, Either with set of utility extension methods.
+    </summary>
+    <language>en-US</language>
+    <projectUrl>https://github.com/TargetProcess/Tp.Core.Functional</projectUrl>
+    <iconUrl>https://nuget.org/Content/Images/packageDefaultIcon-50x50.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
+    <copyright>Copyright Taucraft Ltd 2015</copyright>
+    <dependencies>
+    </dependencies>
+    <references></references>
+    <tags>Taucraft Maybe Either Try .net45</tags>
+  </metadata>
+</package>
