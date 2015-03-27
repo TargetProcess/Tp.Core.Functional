@@ -1,5 +1,4 @@
 SET Version=0.1.1
-pushd Tp.Core.Functional
-nuget pack -Build -Symbols -Properties Configuration=Release -Version %VERSION%
-nuget push Tp.Core.Functional.%VERSION%.nupkg
-popd
+
+nuget\nuget.exe pack src\Tp.Core.Functional\Tp.Core.Functional.csproj -Build -Symbols -Properties Configuration=Release -Version %VERSION%
+nuget\nuget.exe push Tp.Core.Functional.%VERSION%.nupkg
