@@ -1,3 +1,9 @@
 language: csharp
 sudo: false
 solution: src/Tp.Core.Functional.sln
+install:
+  - nuget restore src/Tp.Core.Functional.sln
+  - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
+script:
+  - xbuild /p:Configuration=Release src/Tp.Core.Functional.sln
+  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./src/Tp.Core.Functional/src/Tp.Core.Functional.Tests/bin/Release/Tp.Core.Functional.Tests.dll
