@@ -6,4 +6,4 @@ install:
   - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
 script:
   - xbuild /p:Configuration=Release src/Tp.Core.Functional.sln
-  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./src/Tp.Core.Functional/src/Tp.Core.Functional.Tests/bin/Release/Tp.Core.Functional.Tests.dll
+  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./src/Tp.Core.Functional.Tests/bin/Release/Tp.Core.Functional.Tests.dll
