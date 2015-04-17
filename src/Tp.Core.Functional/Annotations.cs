@@ -131,7 +131,7 @@ namespace Tp.Core.Annotations
 	/// Specifies assertion type. If the assertion method argument satisifes the condition, then the execution continues. 
 	/// Otherwise, execution is assumed to be halted
 	/// </summary>
-	public enum AssertionConditionType
+	internal enum AssertionConditionType
 	{
 		/// <summary>
 		/// Indicates that the marked parameter should be evaluated to true
@@ -288,7 +288,7 @@ namespace Tp.Core.Annotations
 	}
 
 	[Flags]
-	public enum ImplicitUseKindFlags
+	internal enum ImplicitUseKindFlags
 	{
 		Default = Access | Assign | InstantiatedWithFixedConstructorSignature,
 
@@ -318,7 +318,7 @@ namespace Tp.Core.Annotations
 	/// Specify what is considered used implicitly when marked with <see cref="MeansImplicitUseAttribute"/> or <see cref="UsedImplicitlyAttribute"/>
 	/// </summary>
 	[Flags]
-	public enum ImplicitUseTargetFlags
+	internal enum ImplicitUseTargetFlags
 	{
 		Default = Itself,
 
@@ -364,7 +364,7 @@ namespace Tp.Core.Annotations
 	internal sealed class PureAttribute : Attribute { }
 
 	[AttributeUsage(AttributeTargets.Parameter)]
-	public class PathReferenceAttribute : Attribute
+	internal class PathReferenceAttribute : Attribute
 	{
 		public PathReferenceAttribute() { }
 
