@@ -45,13 +45,7 @@ namespace Tp.Core
 
 		public static Maybe<TResult> FromTryOut<TResult>(TryDelegate<string, TResult> call, string value)
 		{
-			TResult result;
-			return call(value, out result) ? Just(result) : Maybe<TResult>.Nothing;
-		}
-
-		public static Maybe<T> Any<T>([InstantHandle]params Func<Maybe<T>>[] maybes)
-		{
-			return maybes.Select(f => f()).Where(m => m.HasValue).FirstOrDefault(Maybe<T>.Nothing);
+			return FromTryOut<string, TResult>(call, value);
 		}
 
 		[DebuggerStepThrough]
@@ -201,6 +195,12 @@ namespace Tp.Core
 			return maybe.HasValue ? maybe.Value : (T?)null;
 		}
 
+		public static Maybe<T> Any<T>([InstantHandle]params Func<Maybe<T>>[] maybes)
+		{
+			return maybes.Select(f => f()).Where(m => m.HasValue).FirstOrDefault(Maybe<T>.Nothing);
+		}
+
+
 	}
 
 	public struct Maybe<T> : IMaybe
@@ -295,6 +295,7 @@ namespace Tp.Core
 			_hasValue = true;
 		}
 
+		[Pure]
 		public IEnumerator<T> GetEnumerator()
 		{
 			if (_hasValue)
@@ -307,5 +308,8 @@ namespace Tp.Core
 			return HasValue ? string.Format("Just<{0}>( {1} )", typeof(T).Name, Value) : "Nothing";
 		}
 
+
 	}
+
+
 }

@@ -1,15 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-namespace Tp.Core
+﻿namespace Tp.Core
 {
 	public static class TryExtensions
 	{
-		public static Maybe<T> ToMaybe<T>(this IEnumerable<Try<T>> tries)
+		public static Try<T> Flatten<T>(this Try<Try<T>> @try)
 		{
-			return tries.Select(x => x.ToMaybe())
-				.Choose()
-				.FirstOrNothing();
+			return @try.SelectMany(x => x);
 		}
 	}
 }

@@ -14,7 +14,7 @@ namespace Tp.Core
 			return source.Select(sourceItem => maybeSelector(sourceItem).Select(maybeItem => resultSelector(sourceItem, maybeItem)));
 		}
 
-		public static Maybe<IEnumerable<TResult>> SelectMany<TSource, TCollection, TResult>(this Maybe<TSource> source, 
+		public static Maybe<IEnumerable<TResult>> SelectMany<TSource, TCollection, TResult>(this Maybe<TSource> source,
 			[InstantHandle] Func<TSource, IEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, TResult> resultSelector)
 		{
 			return source.Select(sourceItem => collectionSelector(sourceItem).Select(maybeItem => resultSelector(sourceItem, maybeItem)));
@@ -73,6 +73,7 @@ namespace Tp.Core
 							{
 								throw new InvalidOperationException("The input sequence contains more than one element.");
 							}
+							return Maybe.Nothing;
 						}
 
 						result = Maybe.Just(current);
@@ -85,14 +86,9 @@ namespace Tp.Core
 		[DebuggerStepThrough]
 		public static IEnumerable<Maybe<TTo>> Bind<TTo, TFrom>(this IEnumerable<Maybe<TFrom>> m, Func<TFrom, Maybe<TTo>> f)
 		{
-			return m.Select(x => x.Bind<TFrom, TTo>(f));
+			return m.Select(x => x.Bind(f));
 		}
 
-		[DebuggerStepThrough]
-		public static IEnumerable<T> Choose<T>(this IEnumerable<Maybe<T>> items)
-		{
-			return items.Choose(x => x);
-		}
 		/// <summary>
 		/// Returns Nothing if any of <paramref name="parts"/> element is nothing.
 		/// </summary>
@@ -114,13 +110,18 @@ namespace Tp.Core
 		}
 
 		[DebuggerStepThrough]
+		public static IEnumerable<T> Choose<T>(this IEnumerable<Maybe<T>> items)
+		{
+			return items.Choose(x => x);
+		}
+		[DebuggerStepThrough]
 		public static IEnumerable<TResult> Choose<T, TResult>(this IEnumerable<T> items, Func<T, Maybe<TResult>> f)
 		{
 			return items.Select(f).Where(x => x.HasValue).Select(x => x.Value);
 		}
 
 		[DebuggerStepThrough]
-		public static Maybe<IEnumerable<T>> NothingIfEmpty<T>(this ICollection<T> xs) where T : class
+		public static Maybe<IEnumerable<T>> NothingIfEmpty<T>(this ICollection<T> xs)
 		{
 			return xs.Any() ? Maybe.Return(xs.AsEnumerable()) : Maybe.Nothing;
 		}

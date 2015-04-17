@@ -3,13 +3,14 @@
 // TargetProcess proprietary/confidential. Use is subject to license terms. Redistribution of this file is strictly forbidden.
 // 
 
+using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 
 namespace Tp.Core.Functional.Tests
 {
 	[TestFixture]
-	public class MaybeTests
+	public class MaybeTests : TestBase
 	{
 		[Test]
 		public void NothingTest()
@@ -22,6 +23,14 @@ namespace Tp.Core.Functional.Tests
 			Assert.IsTrue(maybeInt == maybeObject);
 			Assert.IsTrue(maybeObject.Equals(maybeInt));
 			Assert.IsTrue(maybeObject == maybeInt);
+
+			Assert.AreEqual(maybeObject.GetHashCode(), 0);
+			Assert.AreEqual(maybeInt.GetHashCode(), 0);
+
+			Assert.AreEqual(Maybe.Nothing, Maybe<int>.Nothing);
+
+			Assert.NotNull(Maybe.Nothing);
+			Assert.NotNull(Maybe<int>.Nothing);
 		}
 
 		[Test]
@@ -34,6 +43,7 @@ namespace Tp.Core.Functional.Tests
 			Assert.IsTrue(maybeInt1 == maybeInt2);
 			Assert.IsTrue(maybeInt2.Equals(maybeInt1));
 			Assert.IsTrue(maybeInt2 == maybeInt1);
+			Assert.IsFalse(maybeInt1.Equals(null));
 		}
 
 		[Test]
@@ -41,11 +51,13 @@ namespace Tp.Core.Functional.Tests
 		{
 			Maybe<int> maybeInt1 = 1;
 			Maybe<int> maybeInt2 = 1;
+			Maybe<int> maybeInt3 = 2;
 
 			Assert.IsTrue(maybeInt1.Equals(maybeInt2));
 			Assert.IsTrue(maybeInt1 == maybeInt2);
 			Assert.IsTrue(maybeInt2.Equals(maybeInt1));
 			Assert.IsTrue(maybeInt2 == maybeInt1);
+			Assert.IsTrue(maybeInt3 != maybeInt1);
 		}
 		[Test]
 		public void JustNotEqualTest()
@@ -70,7 +82,7 @@ namespace Tp.Core.Functional.Tests
 			int sampleValue = 1;
 			Maybe<object> maybeInt2 = sampleValue;
 
-// ReSharper disable once SuspiciousTypeConversion.Global
+			// ReSharper disable once SuspiciousTypeConversion.Global
 			Assert.IsFalse(maybeInt1.Equals(maybeInt2));
 			Assert.IsFalse(maybeInt1 == maybeInt2);
 			Assert.IsFalse(maybeInt2.Equals(maybeInt1));
@@ -109,12 +121,16 @@ namespace Tp.Core.Functional.Tests
 			Assert.AreEqual(hi.Value, "hi");
 		}
 
-		[Test, ExpectedException(typeof(System.InvalidOperationException), ExpectedMessage = "Cannot get value from Nothing")]
+		[Test]
 		public void NothingHasNoValue()
 		{
 			Maybe<string> hi = Maybe.Nothing;
 			Assert.IsFalse(hi.HasValue);
-			Assert.AreNotEqual(hi.Value, "hi");
+			Assert.Throws<InvalidOperationException>(() =>
+			{
+				// ReSharper disable once UnusedVariable
+				var value = hi.Value;
+			});
 		}
 
 		[Test, TestCaseSource("GetEitherTestCases")]
@@ -176,8 +192,8 @@ namespace Tp.Core.Functional.Tests
 		[Test]
 		public void OfTypeTest()
 		{
-			var foo = Maybe.Just(new Foo());
-			var bar = Maybe.Just(new Bar());
+			var foo = Maybe.Return(new Foo());
+			var bar = Maybe.Return(new Bar());
 
 			Maybe<Foo> foobar = Maybe.Just((Foo)new Bar());
 
@@ -198,5 +214,177 @@ namespace Tp.Core.Functional.Tests
 			Assert.IsTrue(i.OfType<object>().HasValue);
 		}
 
+
+		[Test]
+		public void ReturnIfNotNullTest()
+		{
+			Assert.IsFalse(Maybe.ReturnIfNotNull<object>(null).HasValue);
+			Assert.IsTrue(Maybe.ReturnIfNotNull(new object()).HasValue);
+		}
+
+
+		[Test]
+		public void TryTest()
+		{
+			Assert.IsTrue(Maybe.Try(() => DateTime.Now).HasValue);
+			Assert.IsFalse(Maybe.Try<object>(() => { throw new Exception(); }).HasValue);
+		}
+
+		[Test]
+		public void FromTryOutTest()
+		{
+			Assert.AreEqual(Maybe.FromTryOut<int>(int.TryParse, "1"), Maybe.Just(1));
+			Assert.AreEqual(Maybe.FromTryOut<int>(int.TryParse, "_"), Maybe.Nothing);
+		}
+
+		[Test]
+		public void NothingIfNullTest()
+		{
+			object foo = null;
+			object bar = new object();
+			int? i = null;
+			int? j = 0;
+
+			Assert.IsFalse(foo.NothingIfNull().HasValue);
+			Assert.IsTrue(bar.NothingIfNull().HasValue);
+
+			Assert.IsFalse(i.NothingIfNull().HasValue);
+			Assert.IsTrue(j.NothingIfNull().HasValue);
+		}
+
+		[Test]
+		public void DoTest()
+		{
+			var just = Maybe.Just(1);
+			Maybe<int> nothing = Maybe.Nothing;
+
+
+			int result = 0;
+			just.Do(x => result = x);
+			Assert.AreEqual(result, 1);
+
+
+			bool elsePass = false;
+			nothing.Do(Fail, () => elsePass = true);
+			Assert.IsTrue(elsePass);
+		}
+
+		[Test]
+		public void SelectTest()
+		{
+			Assert.AreEqual(Maybe.Just(1), Maybe.Just(2).Select(x => x / 2));
+			Assert.AreEqual(Maybe.Nothing, Maybe<int>.Nothing.Select(Fail<int, int>));
+		}
+		[Test]
+		public void WhereTest()
+		{
+			Assert.AreEqual(Maybe.Just(1), Maybe.Just(1).Where(x => x == 1));
+			Assert.AreEqual(Maybe.Nothing, Maybe.Just(1).Where(x => x == 2));
+			Assert.AreEqual(Maybe.Nothing, Maybe<int>.Nothing.Where(Fail<int, bool>));
+		}
+
+		[Test]
+		public void TryGetValueTest()
+		{
+			var m = Maybe.Just(1);
+
+			int i;
+			Assert.IsTrue(m.TryGetValue(out i));
+			Assert.AreEqual(1, i);
+
+			var n = Maybe<int>.Nothing;
+
+			Assert.IsFalse(n.TryGetValue(out i));
+		}
+
+		[Test]
+		public void GetOrThrowTest()
+		{
+			var m = Maybe.Just(1);
+
+			Assert.AreEqual(1, m.GetOrThrow(Fail<Exception>));
+
+			Assert.AreEqual(1, m.GetOrThrow("Some Message"));
+
+			var n = Maybe<int>.Nothing;
+
+			Assert.That(() => n.GetOrThrow(() => new Exception("Some message")), Throws.Exception.Message.EqualTo("Some message"));
+			Assert.That(() => n.GetOrThrow("Some message"), Throws.Exception.Message.EqualTo("Some message").And.InstanceOf<InvalidOperationException>());
+		}
+
+		[Test]
+		public void ToTryTest()
+		{
+			var t1 = Maybe.Just(1).ToTry(Fail<Exception>);
+
+			Assert.True(t1.IsSuccess);
+
+
+			var t2 = Maybe<int>.Nothing.ToTry(() => new Exception("Some message"));
+			Assert.IsFalse(t2.IsSuccess);
+
+			t2.Switch(Fail, e => Assert.AreEqual("Some message", e.Message));
+		}
+
+		[Test]
+		public void AnyTest()
+		{
+			Func<Maybe<int>> j = () => Maybe.Just(1);
+			Func<Maybe<int>> n = () => Maybe.Nothing;
+
+			Assert.AreEqual(Maybe.Any(j, n), Maybe.Just(1));
+			Assert.AreEqual(Maybe.Any(n, j), Maybe.Just(1));
+			Assert.AreEqual(Maybe.Any(n), Maybe.Nothing);
+		}
+
+		[Test]
+		public void ToNullableTest()
+		{
+			Assert.AreEqual((int?)1, Maybe.Just(1).ToNullable());
+			Assert.Null(Maybe<int>.Nothing.ToNullable());
+		}
+
+		[Test]
+		public void GetOrElseTest()
+		{
+			Assert.AreEqual(1, Maybe.Just(1).GetOrElse(Fail<int>));
+
+			Assert.AreEqual(2, Maybe<int>.Nothing.GetOrElse(() => 2));
+		}
+
+		[Test]
+		public void GetOrDefaultTest()
+		{
+			Assert.AreEqual(1, Maybe.Just(1).GetOrDefault(2));
+			Assert.AreEqual(2, Maybe<int>.Nothing.GetOrDefault(2));
+		}
+
+		[Test]
+		public void OrElseTest()
+		{
+			Assert.AreEqual(Maybe.Just(1), Maybe.Just(1).OrElse(Fail<Maybe<int>>));
+
+			Assert.AreEqual(Maybe.Just(2), Maybe<int>.Nothing.OrElse(() => Maybe.Just(2)));
+		}
+
+		[Test]
+		public void BindTest()
+		{
+			Assert.AreEqual(Maybe.Just(2), Maybe.Just(1).Bind(x => Maybe.Just(x * 2)));
+
+			Assert.AreEqual(Maybe.Nothing, Maybe<int>.Nothing.Bind(Fail<int, Maybe<int>>));
+		}
+
+		[Test]
+		public void GetEnumeratorTest()
+		{
+			var justEnumerator = Maybe.Just(1).GetEnumerator();
+			Assert.True(justEnumerator.MoveNext());
+			Assert.AreEqual(1, justEnumerator.Current);
+			Assert.IsFalse(justEnumerator.MoveNext());
+
+			var nothingEnumerator = Maybe<int>.Nothing.GetEnumerator();
+			Assert.False(nothingEnumerator.MoveNext());
+		}
 	}
 }

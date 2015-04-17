@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Tp.Core.Annotations;
 
 namespace Tp.Core
@@ -21,6 +22,11 @@ namespace Tp.Core
 		{
 			return new Success<T>(value);
 		}
+
+		public static Try<T> Failure<T>(Exception e)
+		{
+			return new Failure<T>(e);
+		}
 	}
 
 	//// ReSharper disable InconsistentNaming
@@ -42,7 +48,7 @@ namespace Tp.Core
 		Try<T> Recover([InstantHandle]Func<Exception, T> recover);
 		Try<T> Recover([InstantHandle]Func<Exception, Try<T>> recover);
 	}
-	public sealed class Success<T> : Try<T>
+	public sealed class Success<T> : Try<T>, IEquatable<Success<T>>
 	{
 		private readonly T _value;
 
@@ -73,14 +79,25 @@ namespace Tp.Core
 
 		public Try<T> Where(Func<T, bool> filter)
 		{
-			if (filter(_value))
-				return this;
-			return new Failure<T>(new ArgumentOutOfRangeException(string.Format("Predicate does not hold for {0}", _value), (Exception)null));
+			return Try.Create<Try<T>>(() =>
+			{
+				if (filter(_value))
+					return this;
+				return new Failure<T>(new ArgumentOutOfRangeException(string.Format("Predicate does not hold for {0}", _value)));
+			}
+				).Flatten();
 		}
 
 		public Try<U> SelectMany<U>(Func<T, Try<U>> selector)
 		{
-			return selector(_value);
+			try
+			{
+				return selector(_value);
+			}
+			catch (Exception e)
+			{
+				return new Failure<U>(e);
+			}
 		}
 
 		public T Value
@@ -107,6 +124,25 @@ namespace Tp.Core
 		{
 			return this;
 		}
+
+		public bool Equals(Success<T> other)
+		{
+			if (ReferenceEquals(null, other)) return false;
+			if (ReferenceEquals(this, other)) return true;
+			return EqualityComparer<T>.Default.Equals(_value, other._value);
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (ReferenceEquals(null, obj)) return false;
+			if (ReferenceEquals(this, obj)) return true;
+			return obj is Success<T> && Equals((Success<T>)obj);
+		}
+
+		public override int GetHashCode()
+		{
+			return EqualityComparer<T>.Default.GetHashCode(_value);
+		}
 	}
 
 	public sealed class Failure<T> : Try<T>
@@ -125,7 +161,7 @@ namespace Tp.Core
 
 		public Try<T> OrElse(Func<Try<T>> @default)
 		{
-			return @default();
+			return Try.Create(@default).Flatten();
 		}
 
 		public Maybe<T> ToMaybe()
@@ -170,7 +206,7 @@ namespace Tp.Core
 
 		public Try<T> Recover(Func<Exception, Try<T>> recover)
 		{
-			return Try.Create(() => recover(Exception)).SelectMany(x => x);
+			return Try.Create(() => recover(Exception)).Flatten();
 		}
 	}
 }
