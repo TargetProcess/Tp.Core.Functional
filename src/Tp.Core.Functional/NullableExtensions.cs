@@ -21,12 +21,6 @@ namespace System
 			return value.HasValue ? func(value.Value) : null;
 		}
 
-		public static TTo Bind<T, TTo>(this T? value, Func<T, TTo> func)
-			where T : struct
-			where TTo : class
-		{
-			return value.HasValue ? func(value.Value) : null;
-		}
 
 		public static IEnumerable<TTo> Choose<T, TTo>(this IEnumerable<T> xs, Func<T, TTo?> map) where TTo : struct
 		{

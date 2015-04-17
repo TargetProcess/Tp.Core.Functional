@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using NUnit.Framework;
 
 namespace Tp.Core.Functional.Tests
@@ -186,6 +185,17 @@ namespace Tp.Core.Functional.Tests
 
 				AssertNothing(q);
 			}
+		}
+
+		[Test]
+		public void BindTest()
+		{
+			var collection = new[] { Maybe.Just(1), Maybe.Nothing, Maybe.Just(2) };
+
+			var result = collection.Bind(x => x == 1 ? Maybe.Just(3) : Maybe.Nothing);
+
+
+			Assert.AreEqual(result, new[] { Maybe.Just(3), Maybe.Nothing, Maybe<int>.Nothing });
 		}
 
 	}

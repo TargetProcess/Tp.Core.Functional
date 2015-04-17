@@ -54,8 +54,7 @@
     <AssemblyOriginatorKeyFile>TpPublic.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="DictionaryMaybeExtensions.cs" />
-    <Compile Include="MaybeDictionary.cs" />
+    <Compile Include="DictionaryExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Annotations.cs" />
     <Compile Include="Either.cs" />
