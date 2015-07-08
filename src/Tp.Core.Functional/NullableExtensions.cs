@@ -14,6 +14,14 @@ namespace System
 			return value.HasValue ? func(value.Value) : (TTo?)null;
 		}
 
+		public static TC? SelectMany<TA, TB, TC>(this TA? ma, Func<TA, TB?> func, Func<TA, TB, TC> selector)
+			where TA : struct
+			where TB : struct
+			where TC : struct
+		{
+			return ma.Bind(a => func(a).Bind<TB, TC>(b => selector(a, b)));
+		}
+
 		public static TTo? Bind<T, TTo>(this T? value, Func<T, TTo?> func)
 			where T : struct
 			where TTo : struct
@@ -29,11 +37,6 @@ namespace System
 				.Where(x => x.HasValue)
 				// ReSharper disable once PossibleInvalidOperationException
 				.Select(x => x.Value);
-		}
-
-		public static T? ToNullable<T>(this T value) where T : struct
-		{
-			return value;
 		}
 
 		public static Maybe<T> ToMaybe<T>(this T? value) where T : struct
