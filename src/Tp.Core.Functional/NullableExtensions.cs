@@ -19,7 +19,15 @@ namespace System
 			where TB : struct
 			where TC : struct
 		{
-			return ma.Bind(a => func(a).Bind<TB, TC>(b => selector(a, b)));
+			if (ma.HasValue)
+			{
+				var mb = func(ma.Value);
+				if (mb.HasValue)
+				{
+					return selector(ma.Value, mb.Value);
+				}
+			}
+			return null;
 		}
 
 		public static TTo? Bind<T, TTo>(this T? value, Func<T, TTo?> func)
@@ -32,11 +40,7 @@ namespace System
 
 		public static IEnumerable<TTo> Choose<T, TTo>(this IEnumerable<T> xs, Func<T, TTo?> map) where TTo : struct
 		{
-			return xs
-				.Select(map)
-				.Where(x => x.HasValue)
-				// ReSharper disable once PossibleInvalidOperationException
-				.Select(x => x.Value);
+			return xs.Select(map).Where(m => m.HasValue).Select(m => m.Value);
 		}
 
 		public static Maybe<T> ToMaybe<T>(this T? value) where T : struct
