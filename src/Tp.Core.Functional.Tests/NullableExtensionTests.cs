@@ -46,8 +46,6 @@ namespace Tp.Core.Functional.Tests
 			var n = Maybe<int>.Nothing;
 			Assert.IsNull(n.ToNullable());
 
-			int j = 4;
-			Assert.AreEqual((int?)4, j.ToNullable());
 		}
 
 		[Test]
@@ -58,6 +56,16 @@ namespace Tp.Core.Functional.Tests
 			var result = collection.Choose(x => x == 1 ? null : x);
 
 			Assert.AreEqual(new int?[] { 2, 3 }, result);
+		}
+
+		[TestCase(null, null, Result = null)]
+		[TestCase(1, null, Result = null)]
+		[TestCase(null, 1u, Result = null)]
+		[TestCase(1, 1u, Result = 2L)]
+		public long? SelectManyTest(int? a, uint? b)
+		{
+			// ReSharper disable once PossibleInvalidOperationException
+			return a.SelectMany(aa => b, (aa, bb) => (long)(a + b));
 		}
 	}
 }
