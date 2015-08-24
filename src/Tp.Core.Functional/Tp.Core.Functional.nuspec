@@ -3,13 +3,13 @@
   <metadata>
     <id>Tp.Core.Functional</id>
     <version>0.1</version>
-    <owners>TargetProcess</owners>
-    <authors>TargetProcess</authors>
+    <owners>Targetprocess</owners>
+    <authors>Targetprocess</authors>
     <description>
-      This package includes implementaion of Maybe, Try, Either with set of utility extension methods.
+      This package includes implementation of Maybe, Try, Either with set of utility extension methods.
     </description>
     <summary>
-      This package includes implementaion of Maybe, Try, Either with set of utility extension methods.
+      This package includes implementation of Maybe, Try, Either with set of utility extension methods.
     </summary>
     <language>en-US</language>
     <projectUrl>https://github.com/TargetProcess/Tp.Core.Functional</projectUrl>
