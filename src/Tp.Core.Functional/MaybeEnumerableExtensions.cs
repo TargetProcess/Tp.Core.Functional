@@ -20,7 +20,6 @@ namespace Tp.Core
 			return source.Select(sourceItem => collectionSelector(sourceItem).Select(maybeItem => resultSelector(sourceItem, maybeItem)));
 		}
 
-		[DebuggerStepThrough]
 		public static IEnumerable<T> ToEnumerable<T>(this Maybe<T> maybe)
 		{
 			if (maybe.HasValue)
@@ -29,19 +28,16 @@ namespace Tp.Core
 			}
 		}
 
-		[DebuggerStepThrough]
 		public static Maybe<T> FirstOrNothing<T>(this IEnumerable<T> items)
 		{
 			return FirstOrNothing(items, x => true);
 		}
 
-		[DebuggerStepThrough]
 		public static Maybe<T> SingleOrNothing<T>(this IEnumerable<T> items, bool throwOnSeveral = true)
 		{
 			return SingleOrNothing(items, x => true, throwOnSeveral);
 		}
 
-		[DebuggerStepThrough]
 		public static Maybe<T> FirstOrNothing<T>(this IEnumerable<T> items, [InstantHandle] Func<T, bool> condition)
 		{
 			using (var enumerator = items.GetEnumerator())
@@ -56,7 +52,6 @@ namespace Tp.Core
 			}
 		}
 
-		[DebuggerStepThrough]
 		public static Maybe<T> SingleOrNothing<T>(this IEnumerable<T> items, [InstantHandle] Func<T, bool> condition, bool throwOnSeveral = true)
 		{
 			var result = Maybe<T>.Nothing;
@@ -83,7 +78,6 @@ namespace Tp.Core
 			}
 		}
 
-		[DebuggerStepThrough]
 		public static IEnumerable<Maybe<TTo>> Bind<TTo, TFrom>(this IEnumerable<Maybe<TFrom>> m, Func<TFrom, Maybe<TTo>> f)
 		{
 			return m.Select(x => x.Bind(f));
@@ -109,18 +103,31 @@ namespace Tp.Core
 			return Maybe.Just((IEnumerable<T>)result.AsReadOnly());
 		}
 
-		[DebuggerStepThrough]
 		public static IEnumerable<T> Choose<T>(this IEnumerable<Maybe<T>> items)
 		{
 			return items.Choose(x => x);
 		}
-		[DebuggerStepThrough]
+
 		public static IEnumerable<TResult> Choose<T, TResult>(this IEnumerable<T> items, Func<T, Maybe<TResult>> f)
 		{
-			return items.Select(f).Where(x => x.HasValue).Select(x => x.Value);
+			return items.Choose(f, (_, x) => x);
 		}
 
-		[DebuggerStepThrough]
+		public static IEnumerable<TResult> Choose<T, TIntermediate, TResult>(
+			this IEnumerable<T> items,
+			Func<T, Maybe<TIntermediate>> f,
+			Func<T, TIntermediate, TResult> resultSelector)
+		{
+			foreach (var item in items)
+			{
+				var maybeValue = f(item);
+				if (maybeValue.HasValue)
+				{
+					yield return resultSelector(item, maybeValue.Value);
+				}
+			}
+		}
+
 		public static Maybe<IEnumerable<T>> NothingIfEmpty<T>(this ICollection<T> xs)
 		{
 			return xs.Any() ? Maybe.Return(xs.AsEnumerable()) : Maybe.Nothing;

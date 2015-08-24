@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using NUnit.Framework;
 
 namespace Tp.Core.Functional.Tests
@@ -91,6 +92,21 @@ namespace Tp.Core.Functional.Tests
 
 			Assert.AreEqual(collection.Choose(x => x == "1" ? Maybe.Just(1) : Maybe.Nothing), new[] { 1 });
 			Assert.IsEmpty(collection.Choose(x => Maybe<string>.Nothing));
+		}
+
+		[Test]
+		public void ChooseWithSelectorTest()
+		{
+			var collection = new[] {1, 2, 3};
+			var result = collection.Choose(
+				input => input == 1 ? Maybe.Just(input.ToString()) : Maybe.Nothing,
+				(input, v) => new {Input = input, Output = v}).ToList();
+
+			Assert.AreEqual(new[] {new {Input = 1, Output = "1"}}, result);
+
+			Assert.IsEmpty(collection.Choose<int, string, string>(
+				x => Maybe<string>.Nothing,
+				(a, b) => { throw new Exception("This should never be thrown"); }));
 		}
 
 		[Test]
