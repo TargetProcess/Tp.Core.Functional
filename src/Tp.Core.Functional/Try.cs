@@ -18,20 +18,13 @@ namespace Tp.Core
 			}
 		}
 
-		public static Try<T> Success<T>(T value)
-		{
-			return new Success<T>(value);
-		}
+		public static Try<T> Success<T>(T value) => new Success<T>(value);
 
-		public static Try<T> Failure<T>(Exception e)
-		{
-			return new Failure<T>(e);
-		}
+		public static Try<T> Failure<T>(Exception e) => new Failure<T>(e);
 	}
 
-	//// ReSharper disable InconsistentNaming
+	//// ReSharper disable once InconsistentNaming
 	public interface Try<T>
-	//// ReSharper restore InconsistentNaming
 	{
 		T GetOrElse(Func<T> @default);
 		Try<T> OrElse(Func<Try<T>> @default);
@@ -50,40 +43,26 @@ namespace Tp.Core
 	}
 	public sealed class Success<T> : Try<T>, IEquatable<Success<T>>
 	{
-		private readonly T _value;
-
 		public Success(T value)
 		{
-			_value = value;
+			Value = value;
 		}
 
-		public T GetOrElse(Func<T> @default)
-		{
-			return _value;
-		}
+		T Try<T>.GetOrElse(Func<T> @default) => Value;
 
-		public Try<T> OrElse(Func<Try<T>> @default)
-		{
-			return this;
-		}
+		public Try<T> OrElse(Func<Try<T>> @default) => this;
 
-		public Maybe<T> ToMaybe()
-		{
-			return Maybe.Just(_value);
-		}
+		public Maybe<T> ToMaybe() => Maybe.Just(Value);
 
-		public Try<U> Select<U>(Func<T, U> selector)
-		{
-			return Try.Create(() => selector(_value));
-		}
+		public Try<U> Select<U>(Func<T, U> selector) => Try.Create(() => selector(Value));
 
 		public Try<T> Where(Func<T, bool> filter)
 		{
 			return Try.Create<Try<T>>(() =>
 			{
-				if (filter(_value))
+				if (filter(Value))
 					return this;
-				return new Failure<T>(new ArgumentOutOfRangeException(string.Format("Predicate does not hold for {0}", _value)));
+				return new Failure<T>(new ArgumentOutOfRangeException($"Predicate does not hold for {Value}"));
 			}
 				).Flatten();
 		}
@@ -92,7 +71,7 @@ namespace Tp.Core
 		{
 			try
 			{
-				return selector(_value);
+				return selector(Value);
 			}
 			catch (Exception e)
 			{
@@ -100,36 +79,21 @@ namespace Tp.Core
 			}
 		}
 
-		public T Value
-		{
-			get { return _value; }
-		}
+		public T Value { get; }
 
-		public bool IsSuccess
-		{
-			get { return true; }
-		}
+		public bool IsSuccess { get; } = true;
 
-		public void Switch(Action<T> sucess, Action<Exception> exception)
-		{
-			sucess(_value);
-		}
+		public void Switch(Action<T> sucess, Action<Exception> exception) => sucess(Value);
 
-		public Try<T> Recover(Func<Exception, T> recover)
-		{
-			return this;
-		}
+		public Try<T> Recover(Func<Exception, T> recover) => this;
 
-		public Try<T> Recover(Func<Exception, Try<T>> recover)
-		{
-			return this;
-		}
+		public Try<T> Recover(Func<Exception, Try<T>> recover) => this;
 
 		public bool Equals(Success<T> other)
 		{
 			if (ReferenceEquals(null, other)) return false;
 			if (ReferenceEquals(this, other)) return true;
-			return EqualityComparer<T>.Default.Equals(_value, other._value);
+			return EqualityComparer<T>.Default.Equals(Value, other.Value);
 		}
 
 		public override bool Equals(object obj)
@@ -139,74 +103,41 @@ namespace Tp.Core
 			return obj is Success<T> && Equals((Success<T>)obj);
 		}
 
-		public override int GetHashCode()
-		{
-			return EqualityComparer<T>.Default.GetHashCode(_value);
-		}
+		public override int GetHashCode() => EqualityComparer<T>.Default.GetHashCode(Value);
 	}
 
 	public sealed class Failure<T> : Try<T>
 	{
-		public Exception Exception { get; private set; }
+		public Exception Exception { get; }
 
 		public Failure(Exception exception)
 		{
 			Exception = exception;
 		}
 
-		public T GetOrElse(Func<T> @default)
-		{
-			return @default();
-		}
+		public T GetOrElse(Func<T> @default) => @default();
 
-		public Try<T> OrElse(Func<Try<T>> @default)
-		{
-			return Try.Create(@default).Flatten();
-		}
+		public Try<T> OrElse(Func<Try<T>> @default) => Try.Create(@default).Flatten();
 
-		public Maybe<T> ToMaybe()
-		{
-			return Maybe.Nothing;
-		}
+		public Maybe<T> ToMaybe() => Maybe.Nothing;
 
-		public Try<U> Select<U>(Func<T, U> selector)
-		{
-			return new Failure<U>(Exception);
-		}
+		public Try<U> Select<U>(Func<T, U> selector) => new Failure<U>(Exception);
 
-		public Try<T> Where(Func<T, bool> filter)
-		{
-			return this;
-		}
+		public Try<T> Where(Func<T, bool> filter) => this;
 
-		public Try<U> SelectMany<U>(Func<T, Try<U>> selector)
-		{
-			return new Failure<U>(Exception);
-		}
+		public Try<U> SelectMany<U>(Func<T, Try<U>> selector) => new Failure<U>(Exception);
 
 		public T Value
 		{
 			get { throw Exception; }
 		}
 
-		public bool IsSuccess
-		{
-			get { return false; }
-		}
+		public bool IsSuccess { get; } = false;
 
-		public void Switch(Action<T> sucess, Action<Exception> exception)
-		{
-			exception(Exception);
-		}
+		public void Switch(Action<T> sucess, Action<Exception> exception) => exception(Exception);
 
-		public Try<T> Recover(Func<Exception, T> recover)
-		{
-			return Try.Create(() => recover(Exception));
-		}
+		public Try<T> Recover(Func<Exception, T> recover) => Try.Create(() => recover(Exception));
 
-		public Try<T> Recover(Func<Exception, Try<T>> recover)
-		{
-			return Try.Create(() => recover(Exception)).Flatten();
-		}
+		public Try<T> Recover(Func<Exception, Try<T>> recover) => Try.Create(() => recover(Exception)).Flatten();
 	}
 }

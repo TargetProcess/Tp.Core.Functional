@@ -133,7 +133,7 @@ namespace Tp.Core.Functional.Tests
 			});
 		}
 
-		[Test, TestCaseSource("GetEitherTestCases")]
+		[Test, TestCaseSource(nameof(GetEitherTestCases))]
 		public Maybe<string> MaybeEitherTests(Maybe<int> left, Maybe<int> right)
 		{
 			return left.Either(right, l => "Left " + l, r => "Right " + r);
@@ -258,15 +258,16 @@ namespace Tp.Core.Functional.Tests
 			var just = Maybe.Just(1);
 			Maybe<int> nothing = Maybe.Nothing;
 
-
 			int result = 0;
-			just.Do(x => result = x);
+			var r1 = just.Do(x => result = x);
 			Assert.AreEqual(result, 1);
+			Assert.AreEqual(just, r1);
 
 
 			bool elsePass = false;
-			nothing.Do(Fail, () => elsePass = true);
+			var r2 = nothing.Do(Fail, () => elsePass = true);
 			Assert.IsTrue(elsePass);
+			Assert.AreEqual(nothing, r2);
 		}
 
 		[Test]

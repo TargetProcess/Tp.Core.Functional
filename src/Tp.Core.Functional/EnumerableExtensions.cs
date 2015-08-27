@@ -6,7 +6,7 @@ namespace Tp.Core
 	{
 		public static T FirstOrDefault<T>(this IEnumerable<T> source, T defaultValue)
 		{
-			using (IEnumerator<T> enumerator = source.GetEnumerator())
+			using (var enumerator = source.GetEnumerator())
 			{
 				return enumerator.MoveNext() ? enumerator.Current : defaultValue;
 			}

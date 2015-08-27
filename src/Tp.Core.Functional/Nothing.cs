@@ -1,56 +1,36 @@
 using System;
-using System.Diagnostics;
 
 namespace Tp.Core
 {
 	public struct Nothing : IEquatable<Nothing>, IMaybe
 	{
-		[DebuggerStepThrough]
-		public override int GetHashCode()
-		{
-			return 0;
-		}
+		public override int GetHashCode() => 0;
 
-		[DebuggerStepThrough]
 		public static bool operator ==(Nothing left, Nothing right)
 		{
 			return Equals(left, right);
 		}
 
-		[DebuggerStepThrough]
 		public static bool operator !=(Nothing left, Nothing right)
 		{
 			return !Equals(left, right);
 		}
 
-		public bool HasValue
-		{
-			[DebuggerStepThrough]
-			get { return false; }
-		}
+		public bool HasValue => false;
 
 		public object Value
 		{
 			get { throw new NotSupportedException(); }
 		}
 
-		[DebuggerStepThrough]
-		public bool Equals(Nothing other)
-		{
-			return true;
-		}
+		public bool Equals(Nothing other) => true;
 
-		[DebuggerStepThrough]
 		public override bool Equals(object obj)
 		{
 			if (ReferenceEquals(null, obj)) return false;
 			return obj is Nothing || obj.MaybeAs<IMaybe>().Select(x => !x.HasValue).GetOrDefault();
 		}
 
-		[DebuggerStepThrough]
-		public override string ToString()
-		{
-			return "Nothing";
-		}
+		public override string ToString() => "Nothing";
 	}
 }
