@@ -108,7 +108,7 @@ namespace Tp.Core
 
 	public sealed class Failure<T> : Try<T>
 	{
-	  private readonly Exception _excpetion;
+	  private readonly Exception _exception;
 	  
 		public Exception Exception { get { return _exception; } }
 
