@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Tp.Core.Annotations;
 
@@ -108,11 +108,13 @@ namespace Tp.Core
 
 	public sealed class Failure<T> : Try<T>
 	{
-		public Exception Exception { get; }
+	  private readonly Exception _excpetion;
+	  
+		public Exception Exception { get { return _exception; } }
 
 		public Failure(Exception exception)
 		{
-			Exception = exception;
+			_exception = exception;
 		}
 
 		public T GetOrElse(Func<T> @default) => @default();
@@ -121,23 +123,23 @@ namespace Tp.Core
 
 		public Maybe<T> ToMaybe() => Maybe.Nothing;
 
-		public Try<U> Select<U>(Func<T, U> selector) => new Failure<U>(Exception);
+		public Try<U> Select<U>(Func<T, U> selector) => new Failure<U>(_exception);
 
 		public Try<T> Where(Func<T, bool> filter) => this;
 
-		public Try<U> SelectMany<U>(Func<T, Try<U>> selector) => new Failure<U>(Exception);
+		public Try<U> SelectMany<U>(Func<T, Try<U>> selector) => new Failure<U>(_exception);
 
 		public T Value
 		{
-			get { throw Exception; }
+			get { throw _exception; }
 		}
 
 		public bool IsSuccess { get; } = false;
 
-		public void Switch(Action<T> sucess, Action<Exception> exception) => exception(Exception);
+		public void Switch(Action<T> sucess, Action<Exception> exception) => exception(_exception);
 
-		public Try<T> Recover(Func<Exception, T> recover) => Try.Create(() => recover(Exception));
+		public Try<T> Recover(Func<Exception, T> recover) => Try.Create(() => recover(_exception));
 
-		public Try<T> Recover(Func<Exception, Try<T>> recover) => Try.Create(() => recover(Exception)).Flatten();
+		public Try<T> Recover(Func<Exception, Try<T>> recover) => Try.Create(() => recover(_exception)).Flatten();
 	}
 }
