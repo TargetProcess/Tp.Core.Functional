@@ -40,7 +40,10 @@ namespace Tp.Core
 
 		Try<T> Recover([InstantHandle]Func<Exception, T> recover);
 		Try<T> Recover([InstantHandle]Func<Exception, Try<T>> recover);
+
+		Try<T> Recover<TException>([InstantHandle] Func<TException, Maybe<T>> recover);
 	}
+
 	public sealed class Success<T> : Try<T>, IEquatable<Success<T>>
 	{
 		public Success(T value)
@@ -88,6 +91,7 @@ namespace Tp.Core
 		public Try<T> Recover(Func<Exception, T> recover) => this;
 
 		public Try<T> Recover(Func<Exception, Try<T>> recover) => this;
+		public Try<T> Recover<TException>(Func<TException, Maybe<T>> recover) => this;
 
 		public bool Equals(Success<T> other)
 		{
@@ -108,38 +112,41 @@ namespace Tp.Core
 
 	public sealed class Failure<T> : Try<T>
 	{
-	  private readonly Exception _exception;
-	  
-		public Exception Exception { get { return _exception; } }
+		public Exception @Exception { get; }
 
 		public Failure(Exception exception)
 		{
-			_exception = exception;
+			@Exception = exception;
 		}
 
 		public T GetOrElse(Func<T> @default) => @default();
 
 		public Try<T> OrElse(Func<Try<T>> @default) => Try.Create(@default).Flatten();
 
-		public Maybe<T> ToMaybe() => Maybe.Nothing;
+		public Maybe<T> ToMaybe() => Maybe<T>.Nothing;
 
-		public Try<U> Select<U>(Func<T, U> selector) => new Failure<U>(_exception);
+		public Try<U> Select<U>(Func<T, U> selector) => new Failure<U>(@Exception);
 
 		public Try<T> Where(Func<T, bool> filter) => this;
 
-		public Try<U> SelectMany<U>(Func<T, Try<U>> selector) => new Failure<U>(_exception);
+		public Try<U> SelectMany<U>(Func<T, Try<U>> selector) => new Failure<U>(@Exception);
 
 		public T Value
 		{
-			get { throw _exception; }
+			get { throw Exception; }
 		}
 
 		public bool IsSuccess { get; } = false;
 
-		public void Switch(Action<T> sucess, Action<Exception> exception) => exception(_exception);
+		public void Switch(Action<T> sucess, Action<Exception> exception) => exception(@Exception);
 
-		public Try<T> Recover(Func<Exception, T> recover) => Try.Create(() => recover(_exception));
+		public Try<T> Recover(Func<Exception, T> recover) => Try.Create(() => recover(@Exception));
 
-		public Try<T> Recover(Func<Exception, Try<T>> recover) => Try.Create(() => recover(_exception)).Flatten();
+		public Try<T> Recover(Func<Exception, Try<T>> recover) => Try.Create(() => recover(@Exception)).Flatten();
+
+		public Try<T> Recover<TException>(Func<TException, Maybe<T>> recover)
+		{
+			return Try.Create(() => @Exception.MaybeAs<TException>().Bind(recover).ToTry(() => @Exception)).Flatten();
+		}
 	}
 }
