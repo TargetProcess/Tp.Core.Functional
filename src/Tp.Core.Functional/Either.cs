@@ -6,20 +6,11 @@ namespace Tp.Core
 {
 	public static class Either
 	{
-		public static Choice If(bool condition)
-		{
-			return new Choice(condition);
-		}
+		public static Choice If(bool condition) => new Choice(condition);
 
-		public static Either<TLeft, TRight> CreateLeft<TLeft, TRight>(TLeft value)
-		{
-			return new Left<TLeft, TRight>(value);
-		}
+		public static Either<TLeft, TRight> CreateLeft<TLeft, TRight>(TLeft value) => new Left<TLeft, TRight>(value);
 
-		public static Either<TLeft, TRight> CreateRight<TLeft, TRight>(TRight value)
-		{
-			return new Right<TLeft, TRight>(value);
-		}
+		public static Either<TLeft, TRight> CreateRight<TLeft, TRight>(TRight value) => new Right<TLeft, TRight>(value);
 
 		public class Choice
 		{
@@ -29,10 +20,7 @@ namespace Tp.Core
 				_choice = choice;
 			}
 
-			public PartialChoice<TLeft> Then<TLeft>(TLeft left)
-			{
-				return new PartialChoice<TLeft>(_choice, left);
-			}
+			public PartialChoice<TLeft> Then<TLeft>(TLeft left) => new PartialChoice<TLeft>(_choice, left);
 		}
 
 		public class PartialChoice<TLeft>
@@ -45,31 +33,21 @@ namespace Tp.Core
 				_left = left;
 			}
 
-			public Either<TLeft, TRight> Else<TRight>(TRight right)
-			{
-				return _selectLeft ? CreateLeft<TLeft, TRight>(_left) : CreateRight<TLeft, TRight>(right);
-			}
+			public Either<TLeft, TRight> Else<TRight>(TRight right) => _selectLeft ? CreateLeft<TLeft, TRight>(_left) : CreateRight<TLeft, TRight>(right);
 		}
 
 		private sealed class Left<TLeft, TRight> : Either<TLeft, TRight>, IEquatable<Left<TLeft, TRight>>
 		{
-			private readonly TLeft _value;
 			public Left(TLeft value)
 			{
-				_value = value;
+				Value = value;
 			}
 
-			private TLeft Value { get { return _value; } }
+			private TLeft Value { get; }
 
-			public TResult Switch<TResult>(Func<TLeft, TResult> caseLeft, Func<TRight, TResult> caseRight)
-			{
-				return caseLeft(Value);
-			}
+			public TResult Switch<TResult>(Func<TLeft, TResult> caseLeft, Func<TRight, TResult> caseRight) => caseLeft(Value);
 
-			public void Switch(Action<TLeft> caseLeft, Action<TRight> caseRight)
-			{
-				caseLeft(Value);
-			}
+			public void Switch(Action<TLeft> caseLeft, Action<TRight> caseRight) => caseLeft(Value);
 
 			public bool Equals(Left<TLeft, TRight> other)
 			{
@@ -92,29 +70,22 @@ namespace Tp.Core
 
 			public override string ToString()
 			{
-				return string.Format(CultureInfo.CurrentCulture, "Left({0})", new object[] { Value });
+				return string.Format(CultureInfo.CurrentCulture, "Left({0})", Value);
 			}
 		}
 
 		private sealed class Right<TLeft, TRight> : Either<TLeft, TRight>, IEquatable<Right<TLeft, TRight>>
 		{
-			private readonly TRight _value;
 			public Right(TRight value)
 			{
-				_value = value;
+				Value = value;
 			}
 
-			private TRight Value { get { return _value; } }
+			private TRight Value { get; }
 
-			public TResult Switch<TResult>(Func<TLeft, TResult> caseLeft, Func<TRight, TResult> caseRight)
-			{
-				return caseRight(Value);
-			}
+			public TResult Switch<TResult>(Func<TLeft, TResult> caseLeft, Func<TRight, TResult> caseRight) => caseRight(Value);
 
-			public void Switch(Action<TLeft> caseLeft, Action<TRight> caseRight)
-			{
-				caseRight(Value);
-			}
+			public void Switch(Action<TLeft> caseLeft, Action<TRight> caseRight) => caseRight(Value);
 
 			public bool Equals(Right<TLeft, TRight> other)
 			{
@@ -130,23 +101,16 @@ namespace Tp.Core
 				return Equals(obj as Right<TLeft, TRight>);
 			}
 
-			public override int GetHashCode()
-			{
-				return EqualityComparer<TRight>.Default.GetHashCode(Value);
-			}
+			public override int GetHashCode() => EqualityComparer<TRight>.Default.GetHashCode(Value);
 
-			public override string ToString()
-			{
-				return string.Format(CultureInfo.CurrentCulture, "Right({0})", new object[] { Value });
-			}
+			public override string ToString() => string.Format(CultureInfo.CurrentCulture, "Right({0})", Value);
 		}
 	}
 
-	// ReSharper disable InconsistentNaming
+	// ReSharper disable once InconsistentNaming
 	public interface Either<out TLeft, out TRight>
 	{
 		TResult Switch<TResult>(Func<TLeft, TResult> caseLeft, Func<TRight, TResult> caseRight);
 		void Switch(Action<TLeft> caseLeft, Action<TRight> caseRight);
 	}
-	// ReSharper restore InconsistentNaming
 }

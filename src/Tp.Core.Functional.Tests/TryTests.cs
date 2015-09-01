@@ -131,5 +131,30 @@ namespace Tp.Core.Functional.Tests
 
 			Assert.AreEqual(Assert.Counter, 2);
 		}
+
+		[Test]
+		public void RecoverTypedTest()
+		{
+			AssertSuccess(_success.Recover<TestException>(e => Maybe.Nothing), 1);
+			AssertSuccess(_success.Recover<TestException>(e => Maybe.Just(2)), 1);
+			AssertSuccess(_success.Recover<ArgumentException>(e => Maybe.Nothing), 1);
+			AssertSuccess(_success.Recover<ArgumentException>(e => Maybe.Just(2)), 1);
+			AssertSuccess(_success.Recover<Exception>(e => Maybe.Nothing), 1);
+			AssertSuccess(_success.Recover<Exception>(e => Maybe.Just(2)), 1);
+
+
+			AssertFailure<TestException>(_failure.Recover<TestException>(e => Maybe.Nothing));
+			AssertSuccess(_failure.Recover<TestException>(e => Maybe.Just(2)), 2);
+			AssertFailure<TestException>(_failure.Recover<ArgumentException>(e => Maybe.Nothing));
+			AssertFailure<TestException>(_failure.Recover<ArgumentException>(e => Maybe.Just(2)));
+			AssertFailure<TestException>(_failure.Recover<Exception>(e => Maybe.Nothing));
+			AssertSuccess(_failure.Recover<Exception>(e => Maybe.Just(2)), 2);
+
+
+			AssertSuccess(_failure.Recover<ArgumentException>(e => 2)
+				.Recover<TestException>(e => 3), 3);
+		}
+
+
 	}
 }

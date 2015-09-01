@@ -22,7 +22,7 @@ namespace Tp.Core.Annotations
 	/// <summary>
 	/// Indicates that marked element should be localized or not.
 	/// </summary>
-	[AttributeUsage(AttributeTargets.All, AllowMultiple = false, Inherited = true)]
+	[AttributeUsage(AttributeTargets.All)]
 	internal sealed class LocalizationRequiredAttribute : Attribute
 	{
 		/// <summary>
