@@ -182,3 +182,4 @@ UpgradeLog*.htm
 # Microsoft Fakes
 FakesAssemblies/
 src/Tp.Core.Functional.sln.DotSettings
+src/Tp.Core.Functional/Properties/VersionInfo.cs
