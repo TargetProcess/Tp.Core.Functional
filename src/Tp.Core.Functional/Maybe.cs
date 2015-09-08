@@ -205,16 +205,24 @@ namespace Tp.Core
 		}
 
 
-		public static implicit operator Maybe<T>(Nothing nothing)
-		{
-			return Nothing;
-		}
-
+		// ReSharper disable once UnusedParameter.Global
+		public static implicit operator Maybe<T>(Nothing nothing) => Nothing;
 
 		public static implicit operator Maybe<T>(T value)
 		{
-			var maybe = value as IMaybe;
-			return maybe != null && !maybe.HasValue ? Nothing : new Maybe<T>(value);
+			if (value != null)
+			{
+				var maybe = value as IMaybe;
+				if (maybe == null)
+				{
+					return new Maybe<T>(value);
+				}
+				if (maybe.HasValue)
+				{
+					return new Maybe<T>((T) maybe.Value);
+				}
+			}
+			return Maybe.Nothing;
 		}
 
 		public bool Equals(Maybe<T> other)
@@ -228,8 +236,19 @@ namespace Tp.Core
 			if (obj is Maybe<T>)
 				return Equals((Maybe<T>) obj);
 			var maybe = obj as IMaybe;
-			return maybe != null && !maybe.HasValue && !HasValue;
+			if (maybe == null)
+				return false;
+			if (HasValue && maybe.HasValue)
+			{
+				return Equals(maybe.Value, Value);
+			}
+			if (!HasValue && !maybe.HasValue)
+			{
+				return true;
+			}
+			return false;
 		}
+
 
 		public override int GetHashCode() => HasValue ? EqualityComparer<T>.Default.GetHashCode(Value) : 0;
 
