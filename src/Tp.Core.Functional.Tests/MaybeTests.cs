@@ -144,6 +144,7 @@ namespace Tp.Core.Functional.Tests
 			return left.Either(right, l => "Left " + l, r => "Right " + r);
 		}
 
+		// ReSharper disable once UnusedMethodReturnValue.Local
 		private static IEnumerable<TestCaseData> GetEitherTestCases()
 		{
 			yield return new TestCaseData(Maybe.Just(5), Maybe<int>.Nothing)
