@@ -1,7 +1,7 @@
-﻿// 
+﻿//
 // Copyright (c) 2005-2011 TargetProcess. All rights reserved.
 // TargetProcess proprietary/confidential. Use is subject to license terms. Redistribution of this file is strictly forbidden.
-// 
+//
 
 using System;
 using System.Collections.Generic;
@@ -392,6 +392,14 @@ namespace Tp.Core.Functional.Tests
 
 			var nothingEnumerator = Maybe<int>.Nothing.GetEnumerator();
 			Assert.False(nothingEnumerator.MoveNext());
+
+			Assert.DoesNotThrow(() =>
+			{
+				foreach (var _ in Maybe<int>.Nothing)
+				{
+					throw new Exception();
+				}
+			}, "Supports structural foreach");
 		}
 	}
 }

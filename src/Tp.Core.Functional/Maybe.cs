@@ -204,7 +204,6 @@ namespace Tp.Core
 			}
 		}
 
-
 		// ReSharper disable once UnusedParameter.Global
 		public static implicit operator Maybe<T>(Nothing nothing) => Nothing;
 
@@ -274,7 +273,6 @@ namespace Tp.Core
 			if (HasValue)
 				yield return _value;
 		}
-
 
 		public override string ToString() => HasValue ? $"Just<{typeof (T).Name}>( {Value} )" : "Nothing";
 	}
