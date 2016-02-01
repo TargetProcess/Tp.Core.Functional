@@ -1,4 +1,4 @@
-SET VERSION=0.1.4
+SET VERSION=0.1.3.5
 
 msbuild src\Tp.Core.Functional.sln /t:Rebuild /p:Configuration=Release /p:AsmVersion=%VERSION%
 nuget\nuget.exe pack src\Tp.Core.Functional\Tp.Core.Functional.csproj -Symbols -Version %VERSION%
