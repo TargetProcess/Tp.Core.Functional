@@ -131,5 +131,10 @@ namespace Tp.Core
 		{
 			return xs.Any() ? Maybe.Return(xs.AsEnumerable()) : Maybe.Nothing;
 		}
+
+		public static IEnumerable<T> EmptyIfNothing<T>(this Maybe<IEnumerable<T>> items)
+		{
+			return items.GetOrDefault(Enumerable.Empty<T>());
+		}
 	}
 }
