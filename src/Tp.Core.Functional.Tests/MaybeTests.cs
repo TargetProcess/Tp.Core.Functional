@@ -34,14 +34,6 @@ namespace Tp.Core.Functional.Tests
 		}
 
 		[Test]
-		public void NullLiftedToNothingTest()
-		{
-			Maybe<string> maybeString = null;
-
-			Assert.AreEqual(maybeString, Maybe.Nothing);
-		}
-
-		[Test]
 		public void NothingSelfTest()
 		{
 			Maybe<int> maybeInt1 = Maybe.Nothing;
@@ -84,14 +76,17 @@ namespace Tp.Core.Functional.Tests
 		{
 			Maybe<int> maybeInt1 = 1;
 
+			// Unfortunately, R# has a bug which breaks the inspection here without introducing the separate variable (http://youtrack.jetbrains.com/issue/RSRP-393174).
+			// Should be inlined when it's fixed.
+			// ReSharper disable once ConvertToConstant.Local
 			int sampleValue = 1;
 			Maybe<object> maybeInt2 = sampleValue;
 
 			// ReSharper disable once SuspiciousTypeConversion.Global
-			Assert.IsTrue(maybeInt1.Equals(maybeInt2));
-			Assert.IsTrue(maybeInt1 == maybeInt2);
-			Assert.IsTrue(maybeInt2.Equals(maybeInt1));
-			Assert.IsTrue(maybeInt2 == maybeInt1);
+			Assert.IsFalse(maybeInt1.Equals(maybeInt2));
+			Assert.IsFalse(maybeInt1 == maybeInt2);
+			Assert.IsFalse(maybeInt2.Equals(maybeInt1));
+			Assert.IsFalse(maybeInt2 == maybeInt1);
 		}
 
 		[Test]
