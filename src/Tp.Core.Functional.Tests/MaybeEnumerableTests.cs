@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 
@@ -15,6 +16,14 @@ namespace Tp.Core.Functional.Tests
 
 			AssertNothing(empty.NothingIfEmpty());
 			AssertSome(nonEmpty.NothingIfEmpty(), nonEmpty);
+		}
+
+		[Test]
+		public void EmptyIfNothing()
+		{
+			Assert.IsEmpty(Maybe<IEnumerable<int>>.Nothing.EmptyIfNothing());
+			IEnumerable<int> collection = new[] {1};
+			Assert.AreSame(collection, Maybe.Just(collection).EmptyIfNothing());
 		}
 
 		[Test]
