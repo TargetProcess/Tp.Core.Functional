@@ -23,7 +23,7 @@ namespace Tp.Core.Functional.Tests
 		{
 			Assert.IsEmpty(Maybe<IEnumerable<int>>.Nothing.EmptyIfNothing());
 			IEnumerable<int> collection = new[] {1};
-			Assert.AreEqual(collection, Maybe.Just(collection).EmptyIfNothing());
+			Assert.AreSame(collection, Maybe.Just(collection).EmptyIfNothing());
 		}
 
 		[Test]
