@@ -7,7 +7,7 @@ namespace Tp.Core
 {
 	public static class Maybe
 	{
-		public static readonly Nothing Nothing = default(Nothing);
+		public static const Nothing Nothing = default(Nothing);
 
 		public static Maybe<T> Just<T>(T value) => new Maybe<T>(value);
 
@@ -31,6 +31,13 @@ namespace Tp.Core
 
 		public static Maybe<TResult> FromTryOut<TResult>([InstantHandle] TryDelegate<string, TResult> call, string value) => FromTryOut<string, TResult>(call, value);
 
+		public static Func<TArg, Maybe<TResult>>([InstantHandle] TryDelegate<TArg, TResult> call)
+		{
+			return arg => {
+				TResult result;
+				return call(value, out result) ? Just(result) : Maybe<TResult>.Nothing;
+			};
+		}
 
 		public static Maybe<T> Do<T>(this Maybe<T> m, [NotNull][InstantHandle] Action<T> f, [InstantHandle] Action @else = null)
 		{
