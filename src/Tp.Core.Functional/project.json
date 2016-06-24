@@ -1,0 +1,133 @@
+﻿{
+  "version": "0.1.3.6",
+  "title": "Tp.Core.Functional",
+
+  "packOptions": {
+    "owners": [ "TargetProcess" ],
+    "authors": [ "TargetProcess" ],
+    "copyright": "Copyright Taucraft Ltd 2016",
+    "summary": "This package includes implementation of Maybe, Try, Either with set of utility extension methods.",
+    "description": "This package includes implementation of Maybe, Try, Either with set of utility extension methods.",
+    "tags": [ "Taucraft", "TargetProcess", "Maybe", "Either", "Try", ".net45", "dotnet-core" ],
+    "language": "en-US",
+    "projectUrl": "https://github.com/TargetProcess/Tp.Core.Functional",
+    "licenseUrl": "http://opensource.org/licenses/MIT",
+    "iconUrl": "https://nuget.org/Content/Images/packageDefaultIcon-50x50.png",
+    "requireLicenseAcceptance": false,
+    "releaseNotes": ".NET Core RC2 support"
+  },
+
+  "frameworks": {
+    "net40": {
+      "frameworkAssemblies": {
+      }
+    },
+    "net45": {
+      "frameworkAssemblies": {
+        "System.Linq": ""
+      }
+    },
+    "net451": {
+      "frameworkAssemblies": {
+        "System.Linq": ""
+      }
+    },
+    "net46": {
+      "frameworkAssemblies": {
+        "System.Linq": ""
+      }
+    },
+    "net461": {
+      "frameworkAssemblies": {
+        "System.Linq": ""
+      }
+    },
+    "netstandard1.3": {
+      "NETStandard.Library": {
+        "version": "1.5.0-rc2-*"
+      },
+      "imports": [
+        "dotnet5.5",
+        "portable-win81+wp81",
+        "portable-net45+wp8",
+        "portable-net45+win8+wp8",
+        "portable-wp81+wpa81",
+        "portable-win81+wp81+wpa81",
+        "portable-net45+win8+wpa81+wp8",
+        "portable-net45+win8",
+        "portable-net45+win8+wpa81",
+        "portable-win81+wpa81",
+        "portable-net451+win81",
+        "portable-net451+win81+wpa81"
+      ],
+      "dependencies": {
+        "System.Globalization": "4.0.11-rc2-*",
+        "System.Linq": "4.1.0-rc2-*",
+        "System.Linq.Expressions": "4.0.11-rc2-*",
+        "System.Reflection": "4.1.0-rc2-*",
+        "System.Reflection.Extensions": "4.0.1-rc2-*",
+        "System.Runtime.InteropServices": "4.1.0-rc2-*",
+        "System.Diagnostics.Debug": "4.0.11-rc2-*",
+        "System.Diagnostics.Tools": "4.0.1-rc2-*"
+      }
+    },
+    "netstandard1.4": {
+      "NETStandard.Library": {
+        "version": "1.5.0-rc2-*"
+      },
+      "imports": [
+        "dotnet5.5",
+        "portable-win81+wp81",
+        "portable-net45+wp8",
+        "portable-net45+win8+wp8",
+        "portable-wp81+wpa81",
+        "portable-win81+wp81+wpa81",
+        "portable-net45+win8+wpa81+wp8",
+        "portable-net45+win8",
+        "portable-net45+win8+wpa81",
+        "portable-win81+wpa81",
+        "portable-net451+win81",
+        "portable-net451+win81+wpa81"
+      ],
+      "dependencies": {
+        "System.Globalization": "4.0.11-rc2-*",
+        "System.Linq": "4.1.0-rc2-*",
+        "System.Linq.Expressions": "4.0.11-rc2-*",
+        "System.Reflection": "4.1.0-rc2-*",
+        "System.Reflection.Extensions": "4.0.1-rc2-*",
+        "System.Runtime.InteropServices": "4.1.0-rc2-*",
+        "System.Diagnostics.Debug": "4.0.11-rc2-*",
+        "System.Diagnostics.Tools": "4.0.1-rc2-*"
+      }
+    },
+    "netstandard1.5": {
+      "NETStandard.Library": {
+        "version": "1.5.0-rc2-*"
+      },
+      "imports": [
+        "dotnet5.5",
+        "portable-win81+wp81",
+        "portable-net45+wp8",
+        "portable-net45+win8+wp8",
+        "portable-wp81+wpa81",
+        "portable-win81+wp81+wpa81",
+        "portable-net45+win8+wpa81+wp8",
+        "portable-net45+win8",
+        "portable-net45+win8+wpa81",
+        "portable-win81+wpa81",
+        "portable-net451+win81",
+        "portable-net451+win81+wpa81"
+      ],
+      "dependencies": {
+        "System.Globalization": "4.0.11-rc2-*",
+        "System.Linq": "4.1.0-rc2-*",
+        "System.Linq.Expressions": "4.0.11-rc2-*",
+        "System.Reflection": "4.1.0-rc2-*",
+        "System.Reflection.Extensions": "4.0.1-rc2-*",
+        "System.Runtime.InteropServices": "4.1.0-rc2-*",
+        "System.Diagnostics.Debug": "4.0.11-rc2-*",
+        "System.Diagnostics.Tools": "4.0.1-rc2-*"
+      }
+    }
+  }
+}
