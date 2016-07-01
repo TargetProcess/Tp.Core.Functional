@@ -155,6 +155,23 @@ namespace Tp.Core.Functional.Tests
 				.Recover<TestException>(e => 3), 3);
 		}
 
+		[Test]
+		public void TrySuccessToEither()
+		{
+			var either = Try.Create(() => 1).ToEither();
+			var maybe = either.Switch(Maybe.Return, e => Maybe.Nothing);
+			Assert.IsTrue(maybe.HasValue);
+			Assert.AreEqual(maybe.Value, 1);
+		}
 
+		[Test]
+		public void TryFailToEither()
+		{
+			var error = new Exception();
+			var either = Try.Failure<int>(error).ToEither();
+			var maybe = either.Switch(_ => Maybe.Nothing, Maybe.Return);
+			Assert.IsTrue(maybe.HasValue);
+			Assert.AreEqual(maybe.Value, error);
+		}
 	}
 }
