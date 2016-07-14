@@ -75,8 +75,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DictionaryExtensionsBenchmark.cs" />
-    <Compile Include="MaybeBenchmark.cs" />
+    <Compile Include="DictionaryExtensionsBenchmarks\DictionaryExtensions_GetValueBenchmark.cs" />
+    <Compile Include="MaybeBenchmarks\Maybe_GetOrThrowBenchmark.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

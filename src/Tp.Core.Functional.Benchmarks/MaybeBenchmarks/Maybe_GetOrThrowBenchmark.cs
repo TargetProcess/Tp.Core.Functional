@@ -1,11 +1,12 @@
 ﻿using System;
 using BenchmarkDotNet.Attributes;
 
+// ReSharper disable InconsistentNaming
 // ReSharper disable InvokeAsExtensionMethod
 
-namespace Tp.Core.Functional.Benchmarks
+namespace Tp.Core.Functional.Benchmarks.MaybeBenchmarks
 {
-	public class MaybeBenchmark
+	public class Maybe_GetOrThrowBenchmark
 	{
 		private readonly Maybe<int> _data = Maybe<int>.Nothing;
 
@@ -27,20 +28,20 @@ namespace Tp.Core.Functional.Benchmarks
 		{
 			try
 			{
-				return Maybe_v1.GetOrThrow(_data, "Error message");
+				return Implementations.GetOrThrow_v1(_data, "Error message");
 			}
 			catch (InvalidOperationException)
 			{
 				return -1;
 			}
 		}
-	}
 
-	public static class Maybe_v1
-	{
-		public static TVal GetOrThrow<TVal>(this Maybe<TVal> maybe, string error)
+		private static class Implementations
 		{
-			return maybe.GetOrThrow(() => new InvalidOperationException(error));
+			public static TVal GetOrThrow_v1<TVal>(Maybe<TVal> maybe, string error)
+			{
+				return maybe.GetOrThrow(() => new InvalidOperationException(error));
+			}
 		}
 	}
 }

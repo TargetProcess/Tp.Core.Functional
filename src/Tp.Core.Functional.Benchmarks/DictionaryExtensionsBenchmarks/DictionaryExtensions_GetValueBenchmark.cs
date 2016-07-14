@@ -3,9 +3,11 @@ using System.Linq;
 using BenchmarkDotNet.Attributes;
 
 // ReSharper disable InvokeAsExtensionMethod
-namespace Tp.Core.Functional.Benchmarks
+// ReSharper disable InconsistentNaming
+
+namespace Tp.Core.Functional.Benchmarks.DictionaryExtensionsBenchmarks
 {
-	public class DictionaryExtensionsBenchmark
+	public class DictionaryExtensions_GetValueBenchmark
 	{
 		private readonly Dictionary<int, string> _data =
 			Enumerable.Range(0, 100).ToDictionary(num => num, num => num.ToString());
@@ -19,15 +21,15 @@ namespace Tp.Core.Functional.Benchmarks
 		[Benchmark]
 		public Maybe<string> GetValue_v1()
 		{
-			return DictionaryExtensions_v1.GetValue(_data, 42);
+			return Implementations.GetValue_v1(_data, 42);
 		}
-	}
 
-	public static class DictionaryExtensions_v1
-	{
-		public static Maybe<TVal> GetValue<TKey, TVal>(this IDictionary<TKey, TVal> d, TKey k)
+		private static class Implementations
 		{
-			return k == null ? Maybe.Nothing : Maybe.FromTryOut<TKey, TVal>(d.TryGetValue, k);
+			public static Maybe<TVal> GetValue_v1<TKey, TVal>(IDictionary<TKey, TVal> d, TKey k)
+			{
+				return k == null ? Maybe.Nothing : Maybe.FromTryOut<TKey, TVal>(d.TryGetValue, k);
+			}
 		}
 	}
 }

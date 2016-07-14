@@ -3,6 +3,8 @@ using BenchmarkDotNet.Diagnostics.Windows;
 using BenchmarkDotNet.Exporters;
 using BenchmarkDotNet.Reports;
 using BenchmarkDotNet.Running;
+using Tp.Core.Functional.Benchmarks.DictionaryExtensionsBenchmarks;
+using Tp.Core.Functional.Benchmarks.MaybeBenchmarks;
 
 namespace Tp.Core.Functional.Benchmarks
 {
@@ -10,8 +12,8 @@ namespace Tp.Core.Functional.Benchmarks
 	{
 		public static void Main(string[] args)
 		{
-			RunBenchmark<DictionaryExtensionsBenchmark>();
-			RunBenchmark<MaybeBenchmark>();
+			RunBenchmark<DictionaryExtensions_GetValueBenchmark>();
+			RunBenchmark<Maybe_GetOrThrowBenchmark>();
 		}
 
 		private static Summary RunBenchmark<T>()
