@@ -14,6 +14,7 @@ namespace Tp.Core.Functional.Benchmarks
 		{
 			RunBenchmark<DictionaryExtensions_GetValueBenchmark>();
 			RunBenchmark<Maybe_GetOrThrowBenchmark>();
+			RunBenchmark<Maybe_EqualsBenchmark>();
 		}
 
 		private static Summary RunBenchmark<T>()

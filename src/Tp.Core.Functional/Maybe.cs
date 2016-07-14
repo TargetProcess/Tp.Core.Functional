@@ -210,7 +210,18 @@ namespace Tp.Core
 
 		public bool Equals(Maybe<T> other)
 		{
-			return (!HasValue && !other.HasValue) || (other.HasValue && HasValue && Equals(other.Value, Value));
+			if (!HasValue && !other.HasValue)
+			{
+				return true;
+			}
+
+			if (other.HasValue && HasValue)
+			{
+				var equalityComparer = EqualityComparer<T>.Default;
+				return equalityComparer.Equals(other.Value, Value);
+			}
+
+			return false;
 		}
 
 		public override bool Equals(object obj)
