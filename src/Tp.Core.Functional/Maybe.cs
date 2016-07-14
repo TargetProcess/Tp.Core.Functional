@@ -98,10 +98,14 @@ namespace Tp.Core
 			return maybe.Value;
 		}
 
-
 		public static TVal GetOrThrow<TVal>(this Maybe<TVal> maybe, string error)
 		{
-			return maybe.GetOrThrow(() => new InvalidOperationException(error));
+			if (!maybe.HasValue)
+			{
+				throw new InvalidOperationException(error);
+			}
+
+			return maybe.Value;
 		}
 
 		public static Maybe<TC> SelectMany<TA, TB, TC>(
@@ -111,7 +115,6 @@ namespace Tp.Core
 		{
 			return ma.Bind(a => func(a).Bind(b => Just(selector(a, b))));
 		}
-
 
 		public static Maybe<TTo> MaybeAs<TTo>(this object o, bool nullMeansNothing = true)
 		{

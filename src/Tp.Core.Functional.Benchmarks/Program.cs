@@ -11,6 +11,7 @@ namespace Tp.Core.Functional.Benchmarks
 		public static void Main(string[] args)
 		{
 			RunBenchmark<DictionaryExtensionsBenchmark>();
+			RunBenchmark<MaybeBenchmark>();
 		}
 
 		private static Summary RunBenchmark<T>()
