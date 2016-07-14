@@ -27,7 +27,11 @@ namespace Tp.Core
 
 		public override bool Equals(object obj)
 		{
-			if (ReferenceEquals(null, obj)) return false;
+			if (ReferenceEquals(null, obj))
+			{
+				return false;
+			}
+
 			return obj is Nothing || obj.MaybeAs<IMaybe>().Select(x => !x.HasValue).GetOrDefault();
 		}
 

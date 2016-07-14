@@ -37,7 +37,7 @@ namespace Tp.Core
 		T Value { get; }
 		bool IsSuccess { get; }
 		void Switch([InstantHandle]Action<T> sucess, [InstantHandle]Action<Exception> exception);
-		
+
 		Try<T> Recover([InstantHandle]Func<Exception, T> recover);
 		Try<T> Recover([InstantHandle]Func<Exception, Try<T>> recover);
 
@@ -68,8 +68,7 @@ namespace Tp.Core
 				if (filter(Value))
 					return this;
 				return new Failure<T>(new ArgumentOutOfRangeException($"Predicate does not hold for {Value}"));
-			}
-				).Flatten();
+			}).Flatten();
 		}
 
 		public Try<U> SelectMany<U>(Func<T, Try<U>> selector)
@@ -97,15 +96,31 @@ namespace Tp.Core
 
 		public bool Equals(Success<T> other)
 		{
-			if (ReferenceEquals(null, other)) return false;
-			if (ReferenceEquals(this, other)) return true;
+			if (ReferenceEquals(null, other))
+			{
+				return false;
+			}
+
+			if (ReferenceEquals(this, other))
+			{
+				return true;
+			}
+
 			return EqualityComparer<T>.Default.Equals(Value, other.Value);
 		}
 
 		public override bool Equals(object obj)
 		{
-			if (ReferenceEquals(null, obj)) return false;
-			if (ReferenceEquals(this, obj)) return true;
+			if (ReferenceEquals(null, obj))
+			{
+				return false;
+			}
+
+			if (ReferenceEquals(this, obj))
+			{
+				return true;
+			}
+
 			return obj is Success<T> && Equals((Success<T>)obj);
 		}
 
@@ -117,10 +132,7 @@ namespace Tp.Core
 		private readonly Exception _exception;
 
 		// ReSharper disable once ConvertToAutoProperty
-		public Exception Exception
-		{
-			get { return _exception; }
-		}
+		public Exception Exception => _exception;
 
 		public Failure(Exception exception)
 		{
