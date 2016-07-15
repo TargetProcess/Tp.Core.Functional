@@ -244,12 +244,12 @@ namespace Tp.Core
 
 		public static bool operator ==(Maybe<T> left, Maybe<T> right)
 		{
-			return Equals(left, right);
+			return left.Equals(right);
 		}
 
 		public static bool operator !=(Maybe<T> left, Maybe<T> right)
 		{
-			return !Equals(left, right);
+			return !left.Equals(right);
 		}
 
 		internal Maybe(T value)

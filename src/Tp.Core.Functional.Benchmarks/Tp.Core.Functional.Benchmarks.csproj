@@ -76,6 +76,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DictionaryExtensionsBenchmarks\DictionaryExtensions_GetValueBenchmark.cs" />
+    <Compile Include="MaybeBenchmarks\Maybe_OperatorNotEqBenchmark.cs" />
+    <Compile Include="MaybeBenchmarks\Maybe_OperatorEqBenchmark.cs" />
     <Compile Include="MaybeBenchmarks\Maybe_EqualsBenchmark.cs" />
     <Compile Include="MaybeBenchmarks\Maybe_GetOrThrowBenchmark.cs" />
     <Compile Include="Program.cs" />
