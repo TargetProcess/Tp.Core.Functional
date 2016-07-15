@@ -22,6 +22,7 @@ namespace Tp.Core.Functional.Benchmarks
 
 			RunBenchmark<Nothing_OperatorEqBenchmark>();
 			RunBenchmark<Nothing_OperatorNotEqBenchmark>();
+			RunBenchmark<Nothing_EqualsObjectBenchmark>();
 		}
 
 		private static Summary RunBenchmark<T>()

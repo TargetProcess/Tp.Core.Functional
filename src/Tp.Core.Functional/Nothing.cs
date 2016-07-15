@@ -23,7 +23,12 @@ namespace Tp.Core
 				return false;
 			}
 
-			return obj is Nothing || obj.MaybeAs<IMaybe>().Select(x => !x.HasValue).GetOrDefault();
+			if (obj is Nothing)
+			{
+				return true;
+			}
+
+			return obj is IMaybe && !((IMaybe) obj).HasValue;
 		}
 	}
 }
