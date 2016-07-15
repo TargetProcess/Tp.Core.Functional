@@ -5,25 +5,16 @@ namespace Tp.Core
 	public struct Nothing : IEquatable<Nothing>, IMaybe
 	{
 		public override int GetHashCode() => 0;
-
-		public static bool operator ==(Nothing left, Nothing right)
-		{
-			return Equals(left, right);
-		}
-
-		public static bool operator !=(Nothing left, Nothing right)
-		{
-			return !Equals(left, right);
-		}
-
 		public bool HasValue => false;
+		public bool Equals(Nothing other) => true;
+		public override string ToString() => "Nothing";
+		public static bool operator ==(Nothing left, Nothing right) => true;
+		public static bool operator !=(Nothing left, Nothing right) => false;
 
 		public object Value
 		{
 			get { throw new NotSupportedException(); }
 		}
-
-		public bool Equals(Nothing other) => true;
 
 		public override bool Equals(object obj)
 		{
@@ -34,7 +25,5 @@ namespace Tp.Core
 
 			return obj is Nothing || obj.MaybeAs<IMaybe>().Select(x => !x.HasValue).GetOrDefault();
 		}
-
-		public override string ToString() => "Nothing";
 	}
 }
