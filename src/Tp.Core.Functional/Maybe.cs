@@ -113,7 +113,13 @@ namespace Tp.Core
 			[InstantHandle] Func<TA, Maybe<TB>> func,
 			[InstantHandle] Func<TA, TB, TC> selector)
 		{
-			return ma.Bind(a => func(a).Bind(b => Just(selector(a, b))));
+			if (!ma.HasValue)
+			{
+				return Maybe<TC>.Nothing;
+			}
+
+			var mb = func(ma.Value);
+			return !mb.HasValue ? Maybe<TC>.Nothing : Just(selector(ma.Value, mb.Value));
 		}
 
 		public static Maybe<TTo> MaybeAs<TTo>(this object o, bool nullMeansNothing = true)

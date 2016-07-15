@@ -19,6 +19,7 @@ namespace Tp.Core.Functional.Benchmarks
 			RunBenchmark<Maybe_EqualsBenchmark>();
 			RunBenchmark<Maybe_OperatorEqBenchmark>();
 			RunBenchmark<Maybe_OperatorNotEqBenchmark>();
+			RunBenchmark<Maybe_SelectManyBenchmark>();
 
 			RunBenchmark<Nothing_OperatorEqBenchmark>();
 			RunBenchmark<Nothing_OperatorNotEqBenchmark>();
