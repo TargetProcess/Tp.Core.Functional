@@ -179,7 +179,7 @@ namespace Tp.Core
 
 	public struct Maybe<T> : IMaybe
 	{
-		public static readonly Maybe<T> Nothing = Maybe.Nothing;
+		public static readonly Maybe<T> Nothing = default (Maybe<T>);
 
 		private readonly T _value;
 
