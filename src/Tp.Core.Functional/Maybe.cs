@@ -179,7 +179,16 @@ namespace Tp.Core
 
 		public static Maybe<T> Any<T>([InstantHandle] params Func<Maybe<T>>[] maybes)
 		{
-			return maybes.Select(f => f()).Where(m => m.HasValue).FirstOrDefault(Maybe<T>.Nothing);
+			foreach (var getMaybe in maybes)
+			{
+				var maybe = getMaybe();
+				if (maybe.HasValue)
+				{
+					return maybe;
+				}
+			}
+
+			return Maybe<T>.Nothing;
 		}
 	}
 
