@@ -1,4 +1,4 @@
-SET VERSION=0.1.3.6-rc2
+SET VERSION=0.1.3.8
 
 cd src\Tp.Core.Functional
 dotnet restore
