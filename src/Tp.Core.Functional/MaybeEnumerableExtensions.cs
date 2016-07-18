@@ -13,8 +13,13 @@ namespace Tp.Core
 			Func<TSource, Maybe<TMaybe>> maybeSelector,
 			Func<TSource, TMaybe, TResult> resultSelector)
 		{
-			return source.Select(sourceItem => maybeSelector(sourceItem)
-				.Select(maybeItem => resultSelector(sourceItem, maybeItem)));
+			var list = source as IList<TSource>;
+			if (list != null)
+			{
+				return SelectManyList(maybeSelector, resultSelector, list);
+			}
+
+			return SelectManyIterator(source, maybeSelector, resultSelector);
 		}
 
 		public static Maybe<IEnumerable<TResult>> SelectMany<TSource, TCollection, TResult>(
@@ -159,6 +164,43 @@ namespace Tp.Core
 		public static IEnumerable<T> EmptyIfNothing<T>(this Maybe<IEnumerable<T>> items)
 		{
 			return items.GetOrDefault(Enumerable.Empty<T>());
+		}
+
+		private static IEnumerable<Maybe<TResult>> SelectManyIterator<TSource, TMaybe, TResult>(
+			IEnumerable<TSource> source,
+			Func<TSource, Maybe<TMaybe>> maybeSelector,
+			Func<TSource, TMaybe, TResult> resultSelector)
+		{
+			foreach (var item in source)
+			{
+				yield return GetResultItemForSelectMany(item, maybeSelector, resultSelector);
+			}
+		}
+
+		private static Maybe<TResult>[] SelectManyList<TSource, TMaybe, TResult>(
+			Func<TSource, Maybe<TMaybe>> maybeSelector,
+			Func<TSource, TMaybe, TResult> resultSelector,
+			IList<TSource> list)
+		{
+			var result = new Maybe<TResult>[list.Count];
+
+			for (var i = 0; i < list.Count; i++)
+			{
+				result[i] = GetResultItemForSelectMany(list[i], maybeSelector, resultSelector);
+			}
+
+			return result;
+		}
+
+		private static Maybe<TResult> GetResultItemForSelectMany<TSource, TMaybe, TResult>(
+			TSource sourceItem,
+			Func<TSource, Maybe<TMaybe>> maybeSelector,
+			Func<TSource, TMaybe, TResult> resultSelector)
+		{
+			var selectionResult = maybeSelector(sourceItem);
+			return selectionResult.HasValue
+				? Maybe.Just(resultSelector(sourceItem, selectionResult.Value))
+				: Maybe<TResult>.Nothing;
 		}
 
 		private static Maybe<T> SingleOrNothingEnumerable<T>(

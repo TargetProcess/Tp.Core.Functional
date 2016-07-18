@@ -28,6 +28,7 @@ namespace Tp.Core.Functional.Benchmarks
 			RunBenchmark<Nothing_EqualsObject>();
 
 			RunBenchmark<MaybeEnumerableExtensions_SelectMany_MaybeAsSource>();
+			RunBenchmark<MaybeEnumerableExtensions_SelectMany_EnumerableAsSource>();
 			RunBenchmark<MaybeEnumerableExtensions_ToEnumerable>();
 			RunBenchmark<MaybeEnumerableExtensions_FirstOrNothing_WithoutPredicate>();
 			RunBenchmark<MaybeEnumerableExtensions_SingleOrNothing_WithPredicate>();
