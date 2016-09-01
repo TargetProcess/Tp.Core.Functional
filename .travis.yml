@@ -1,9 +1,17 @@
 language: csharp
 sudo: false
 solution: src/Tp.Core.Functional.sln
+
+before_install:
+  - mono nuget/NuGet.exe help
+
 install:
-  - nuget restore src/Tp.Core.Functional.sln
-  - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
+  # Nuget 3.4.4 can't restore .sln file on mono (searches for msbuild, which of course doesn't exist),
+  # so we will restore all the dependencies manually
+  - mono nuget/NuGet.exe restore src/Tp.Core.Functional/project.json
+  - mono nuget/NuGet.exe restore src/Tp.Core.Functional.Tests/packages.config -PackagesDirectory src/packages
+  - mono nuget/NuGet.exe restore src/Tp.Core.Functional.Benchmarks/packages.config -PackagesDirectory src/packages
+  - mono nuget/NuGet.exe install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
 script:
   - xbuild /p:Configuration=Release src/Tp.Core.Functional.sln
   - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./src/Tp.Core.Functional.Tests/bin/Release/Tp.Core.Functional.Tests.dll
