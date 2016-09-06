@@ -21,8 +21,27 @@ namespace Tp.Core
 			[InstantHandle] Func<TSource, IEnumerable<TCollection>> collectionSelector,
 			Func<TSource, TCollection, TResult> resultSelector)
 		{
-			return source.Select(sourceItem => collectionSelector(sourceItem)
-				.Select(maybeItem => resultSelector(sourceItem, maybeItem)));
+			if (!source.HasValue)
+			{
+				return Maybe<IEnumerable<TResult>>.Nothing;
+			}
+
+			var collection = collectionSelector(source.Value);
+
+			var list = collection as IList<TCollection>;
+			if (list != null)
+			{
+				var result = new TResult[list.Count];
+
+				for (var i = 0; i < list.Count; i++)
+				{
+					result[i] = resultSelector(source.Value, list[i]);
+				}
+
+				return Maybe.Return<IEnumerable<TResult>>(result);
+			}
+
+			return Maybe.Return(collection.Select(maybeItem => resultSelector(source.Value, maybeItem)));
 		}
 
 		public static IEnumerable<T> ToEnumerable<T>(this Maybe<T> maybe)

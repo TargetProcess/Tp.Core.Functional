@@ -7,21 +7,20 @@ namespace Tp.Core
 {
 	public static class Maybe
 	{
+		public delegate bool TryDelegate<in TArg, TResult>(TArg value, out TResult result);
+
 		public static readonly Nothing Nothing = default(Nothing);
 
 		public static Maybe<T> Just<T>(T value) => new Maybe<T>(value);
 
-		public static Maybe<T> Return<T>(T v) => Just(v);
+		public static Maybe<T> Return<T>(T value) => Just(value);
 
-		public static Maybe<T> ReturnIfNotNull<T>(T v)
-			where T : class
+		public static Maybe<T> ReturnIfNotNull<T>(T value) where T : class
 		{
-			return v == null ? Maybe<T>.Nothing : Just(v);
+			return value == null ? Maybe<T>.Nothing : Just(value);
 		}
 
 		public static Maybe<T> Try<T>([InstantHandle] Func<T> action) => Core.Try.Create(action).ToMaybe();
-
-		public delegate bool TryDelegate<in TArg, TResult>(TArg value, out TResult result);
 
 		public static Maybe<TResult> FromTryOut<TArg, TResult>([InstantHandle] TryDelegate<TArg, TResult> call, TArg value)
 		{
@@ -29,8 +28,10 @@ namespace Tp.Core
 			return call(value, out result) ? Just(result) : Maybe<TResult>.Nothing;
 		}
 
-		public static Maybe<TResult> FromTryOut<TResult>([InstantHandle] TryDelegate<string, TResult> call, string value) =>
-			FromTryOut<string, TResult>(call, value);
+		public static Maybe<TResult> FromTryOut<TResult>([InstantHandle] TryDelegate<string, TResult> call, string value)
+		{
+			return FromTryOut<string, TResult>(call, value);
+		}
 
 		public static Maybe<T> Do<T>(
 			this Maybe<T> m,

@@ -5,6 +5,7 @@ using BenchmarkDotNet.Reports;
 using BenchmarkDotNet.Running;
 using Tp.Core.Functional.Benchmarks.DictionaryExtensionsBenchmarks;
 using Tp.Core.Functional.Benchmarks.MaybeBenchmarks;
+using Tp.Core.Functional.Benchmarks.MaybeEnumerableExtensionsBenchmarks;
 using Tp.Core.Functional.Benchmarks.NothingBenchmarks;
 
 namespace Tp.Core.Functional.Benchmarks
@@ -25,6 +26,8 @@ namespace Tp.Core.Functional.Benchmarks
 			RunBenchmark<Nothing_OperatorEqBenchmark>();
 			RunBenchmark<Nothing_OperatorNotEqBenchmark>();
 			RunBenchmark<Nothing_EqualsObjectBenchmark>();
+
+			RunBenchmark<MaybeEnumerableExtensions_SelectMany_MaybeSourceBenchmark>();
 		}
 
 		private static Summary RunBenchmark<T>()
