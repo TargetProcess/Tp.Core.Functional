@@ -83,6 +83,7 @@
     <Compile Include="MaybeBenchmarks\Maybe_EqualsBenchmark.cs" />
     <Compile Include="MaybeBenchmarks\Maybe_GetOrThrowBenchmark.cs" />
     <Compile Include="MaybeEnumerableExtensionsBenchmarks\MaybeEnumerableExtensions_SelectMany_MaybeSourceBenchmark.cs" />
+    <Compile Include="MaybeEnumerableExtensionsBenchmarks\MaybeEnumerableExtensions_ToEnumerableBenchmark.cs" />
     <Compile Include="NothingBenchmarks\Nothing_EqualsObjectBenchmark.cs" />
     <Compile Include="NothingBenchmarks\Nothing_OperatorEqBenchmark.cs" />
     <Compile Include="NothingBenchmarks\Nothing_OperatorNotEqBenchmark.cs" />

@@ -46,10 +46,12 @@ namespace Tp.Core
 
 		public static IEnumerable<T> ToEnumerable<T>(this Maybe<T> maybe)
 		{
-			if (maybe.HasValue)
+			if (!maybe.HasValue)
 			{
-				yield return maybe.Value;
+				return new T[0];
 			}
+
+			return new[] {maybe.Value};
 		}
 
 		public static Maybe<T> FirstOrNothing<T>(this IEnumerable<T> items)

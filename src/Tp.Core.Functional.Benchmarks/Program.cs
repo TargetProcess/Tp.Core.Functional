@@ -28,6 +28,7 @@ namespace Tp.Core.Functional.Benchmarks
 			RunBenchmark<Nothing_EqualsObjectBenchmark>();
 
 			RunBenchmark<MaybeEnumerableExtensions_SelectMany_MaybeSourceBenchmark>();
+			RunBenchmark<MaybeEnumerableExtensions_ToEnumerableBenchmark>();
 		}
 
 		private static Summary RunBenchmark<T>()
