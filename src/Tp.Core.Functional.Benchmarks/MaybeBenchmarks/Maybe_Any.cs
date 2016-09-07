@@ -1,15 +1,16 @@
-﻿using System;
+﻿// ReSharper disable InconsistentNaming
+// ReSharper disable FieldCanBeMadeReadOnly.Local
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using BenchmarkDotNet.Attributes;
 
-// ReSharper disable InconsistentNaming
-
 namespace Tp.Core.Functional.Benchmarks.MaybeBenchmarks
 {
-	public class Maybe_AnyBenchmark
+	public class Maybe_Any
 	{
-		private readonly Func<Maybe<bool>>[] _data =
+		private Func<Maybe<bool>>[] _data =
 		{
 			() => Maybe.Nothing,
 			() => Maybe.Nothing,

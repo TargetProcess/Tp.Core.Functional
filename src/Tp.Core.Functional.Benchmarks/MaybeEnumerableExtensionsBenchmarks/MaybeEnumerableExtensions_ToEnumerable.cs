@@ -8,7 +8,7 @@ using BenchmarkDotNet.Attributes;
 
 namespace Tp.Core.Functional.Benchmarks.MaybeEnumerableExtensionsBenchmarks
 {
-	public class MaybeEnumerableExtensions_ToEnumerableBenchmark
+	public class MaybeEnumerableExtensions_ToEnumerable
 	{
 		private Maybe<int> _dataWithValue = Maybe.Just(5);
 		private Maybe<int> _dataWithoutValue = Maybe.Nothing;

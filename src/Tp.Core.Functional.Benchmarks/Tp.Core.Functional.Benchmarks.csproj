@@ -75,18 +75,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DictionaryExtensionsBenchmarks\DictionaryExtensions_GetValueBenchmark.cs" />
-    <Compile Include="MaybeBenchmarks\Maybe_AnyBenchmark.cs" />
-    <Compile Include="MaybeBenchmarks\Maybe_SelectManyBenchmark.cs" />
-    <Compile Include="MaybeBenchmarks\Maybe_OperatorNotEqBenchmark.cs" />
-    <Compile Include="MaybeBenchmarks\Maybe_OperatorEqBenchmark.cs" />
-    <Compile Include="MaybeBenchmarks\Maybe_EqualsBenchmark.cs" />
-    <Compile Include="MaybeBenchmarks\Maybe_GetOrThrowBenchmark.cs" />
-    <Compile Include="MaybeEnumerableExtensionsBenchmarks\MaybeEnumerableExtensions_SelectMany_MaybeSourceBenchmark.cs" />
-    <Compile Include="MaybeEnumerableExtensionsBenchmarks\MaybeEnumerableExtensions_ToEnumerableBenchmark.cs" />
-    <Compile Include="NothingBenchmarks\Nothing_EqualsObjectBenchmark.cs" />
-    <Compile Include="NothingBenchmarks\Nothing_OperatorEqBenchmark.cs" />
-    <Compile Include="NothingBenchmarks\Nothing_OperatorNotEqBenchmark.cs" />
+    <Compile Include="DictionaryExtensionsBenchmarks\DictionaryExtensions_GetValue.cs" />
+    <Compile Include="MaybeBenchmarks\Maybe_Any.cs" />
+    <Compile Include="MaybeBenchmarks\Maybe_SelectMany.cs" />
+    <Compile Include="MaybeBenchmarks\Maybe_OperatorNotEq.cs" />
+    <Compile Include="MaybeBenchmarks\Maybe_OperatorEq.cs" />
+    <Compile Include="MaybeBenchmarks\Maybe_Equals.cs" />
+    <Compile Include="MaybeBenchmarks\Maybe_GetOrThrow.cs" />
+    <Compile Include="MaybeEnumerableExtensionsBenchmarks\MaybeEnumerableExtensions_SelectMany_MaybeAsSource.cs" />
+    <Compile Include="MaybeEnumerableExtensionsBenchmarks\MaybeEnumerableExtensions_ToEnumerable.cs" />
+    <Compile Include="NothingBenchmarks\Nothing_EqualsObject.cs" />
+    <Compile Include="NothingBenchmarks\Nothing_OperatorEq.cs" />
+    <Compile Include="NothingBenchmarks\Nothing_OperatorNotEq.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

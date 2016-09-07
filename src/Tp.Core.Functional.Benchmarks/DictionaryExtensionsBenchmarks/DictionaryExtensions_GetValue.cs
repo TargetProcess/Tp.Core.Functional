@@ -1,16 +1,16 @@
-﻿using System.Collections.Generic;
+﻿// ReSharper disable InvokeAsExtensionMethod
+// ReSharper disable InconsistentNaming
+// ReSharper disable FieldCanBeMadeReadOnly.Local
+
+using System.Collections.Generic;
 using System.Linq;
 using BenchmarkDotNet.Attributes;
 
-// ReSharper disable InvokeAsExtensionMethod
-// ReSharper disable InconsistentNaming
-
 namespace Tp.Core.Functional.Benchmarks.DictionaryExtensionsBenchmarks
 {
-	public class DictionaryExtensions_GetValueBenchmark
+	public class DictionaryExtensions_GetValue
 	{
-		private readonly Dictionary<int, string> _data =
-			Enumerable.Range(0, 100).ToDictionary(num => num, num => num.ToString());
+		private Dictionary<int, string> _data = Enumerable.Range(0, 100).ToDictionary(num => num, num => num.ToString());
 
 		[Benchmark]
 		public Maybe<string> GetValue_Last()

@@ -1,12 +1,13 @@
-﻿using System;
-using BenchmarkDotNet.Attributes;
-
-// ReSharper disable FieldCanBeMadeReadOnly.Local
+﻿// ReSharper disable FieldCanBeMadeReadOnly.Local
 // ReSharper disable InconsistentNaming
+// ReSharper disable InvokeAsExtensionMethod
+
+using System;
+using BenchmarkDotNet.Attributes;
 
 namespace Tp.Core.Functional.Benchmarks.MaybeBenchmarks
 {
-	public class Maybe_SelectManyBenchmark
+	public class Maybe_SelectMany
 	{
 		private Maybe<int> _ma = Maybe.Just(1);
 

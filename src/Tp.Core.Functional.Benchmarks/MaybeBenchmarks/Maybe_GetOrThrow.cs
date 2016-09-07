@@ -1,14 +1,15 @@
-﻿using System;
-using BenchmarkDotNet.Attributes;
-
-// ReSharper disable InconsistentNaming
+﻿// ReSharper disable InconsistentNaming
 // ReSharper disable InvokeAsExtensionMethod
+// ReSharper disable FieldCanBeMadeReadOnly.Local
+
+using System;
+using BenchmarkDotNet.Attributes;
 
 namespace Tp.Core.Functional.Benchmarks.MaybeBenchmarks
 {
-	public class Maybe_GetOrThrowBenchmark
+	public class Maybe_GetOrThrow
 	{
-		private readonly Maybe<int> _data = Maybe<int>.Nothing;
+		private Maybe<int> _data = Maybe<int>.Nothing;
 
 		[Benchmark]
 		public int GetOrThrow_String_Last()

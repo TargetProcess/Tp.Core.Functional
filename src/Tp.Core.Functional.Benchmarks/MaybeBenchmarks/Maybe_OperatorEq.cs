@@ -1,11 +1,11 @@
-﻿using BenchmarkDotNet.Attributes;
-
-// ReSharper disable FieldCanBeMadeReadOnly.Local
+﻿// ReSharper disable FieldCanBeMadeReadOnly.Local
 // ReSharper disable InconsistentNaming
+
+using BenchmarkDotNet.Attributes;
 
 namespace Tp.Core.Functional.Benchmarks.MaybeBenchmarks
 {
-	public class Maybe_OperatorEqBenchmark
+	public class Maybe_OperatorEq
 	{
 		private Maybe<int> _first = Maybe.Just(1);
 		private Maybe<int> _second = Maybe.Just(1);

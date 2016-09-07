@@ -1,5 +1,6 @@
 ﻿// ReSharper disable InvokeAsExtensionMethod
 // ReSharper disable InconsistentNaming
+// ReSharper disable FieldCanBeMadeReadOnly.Local
 
 using System;
 using System.Collections.Generic;
@@ -8,18 +9,18 @@ using BenchmarkDotNet.Attributes;
 
 namespace Tp.Core.Functional.Benchmarks.MaybeEnumerableExtensionsBenchmarks
 {
-	public class MaybeEnumerableExtensions_SelectMany_MaybeSourceBenchmark
+	public class MaybeEnumerableExtensions_SelectMany_MaybeAsSource
 	{
-		private readonly Maybe<int> _data = 10;
-		private readonly IEnumerable<int> _enumerable = Enumerable.Range(0, 10);
-		private readonly IEnumerable<int> _list = Enumerable.Range(0, 10).ToList();
-		private readonly IEnumerable<int> _array = Enumerable.Range(0, 10).ToArray();
-		private readonly Func<int, int, int> _resultSelector = (i, mi) => mi;
+		private Maybe<int> _data = 10;
+		private IEnumerable<int> _enumerable = Enumerable.Range(0, 10);
+		private IEnumerable<int> _list = Enumerable.Range(0, 10).ToList();
+		private IEnumerable<int> _array = Enumerable.Range(0, 10).ToArray();
+		private Func<int, int, int> _resultSelector = (i, mi) => mi;
 
 		#region Enumerable
 
 		[Benchmark]
-		public Maybe<int> SelectManyLast_Last__Enumerable()
+		public Maybe<int> SelectMany_Last__Enumerable()
 		{
 			return MaybeEnumerableExtensions
 				.SelectMany(_data, _ => _enumerable, _resultSelector)
@@ -39,7 +40,7 @@ namespace Tp.Core.Functional.Benchmarks.MaybeEnumerableExtensionsBenchmarks
 		#region List
 
 		[Benchmark]
-		public Maybe<int> SelectManyLast_Last__List()
+		public Maybe<int> SelectMany_Last__List()
 		{
 			return MaybeEnumerableExtensions
 				.SelectMany(_data, _ => _list, _resultSelector)
@@ -59,7 +60,7 @@ namespace Tp.Core.Functional.Benchmarks.MaybeEnumerableExtensionsBenchmarks
 		#region Array
 
 		[Benchmark]
-		public Maybe<int> SelectManyLast_Last__Array()
+		public Maybe<int> SelectMany_Last__Array()
 		{
 			return MaybeEnumerableExtensions
 				.SelectMany(_data, _ => _array, _resultSelector)

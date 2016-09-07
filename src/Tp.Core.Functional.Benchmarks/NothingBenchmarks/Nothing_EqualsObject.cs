@@ -1,11 +1,11 @@
-﻿using BenchmarkDotNet.Attributes;
-
-// ReSharper disable FieldCanBeMadeReadOnly.Local
+﻿// ReSharper disable FieldCanBeMadeReadOnly.Local
 // ReSharper disable InconsistentNaming
+
+using BenchmarkDotNet.Attributes;
 
 namespace Tp.Core.Functional.Benchmarks.NothingBenchmarks
 {
-	public class Nothing_EqualsObjectBenchmark
+	public class Nothing_EqualsObject
 	{
 		private Nothing _nothing = new Nothing();
 		private object _nothingObj = new Nothing();
