@@ -56,7 +56,8 @@ namespace Tp.Core
 
 		public static Maybe<T> FirstOrNothing<T>(this IEnumerable<T> items)
 		{
-			return FirstOrNothing(items, x => true);
+			var enumerator = items.GetEnumerator();
+			return enumerator.MoveNext() ? Maybe.Just(enumerator.Current) : Maybe<T>.Nothing;
 		}
 
 		public static Maybe<T> SingleOrNothing<T>(this IEnumerable<T> items, bool throwOnSeveral = true)
@@ -66,23 +67,19 @@ namespace Tp.Core
 
 		public static Maybe<T> FirstOrNothing<T>(this IEnumerable<T> items, [InstantHandle] Func<T, bool> condition)
 		{
-			using (var enumerator = items.GetEnumerator())
+			foreach (var item in items)
 			{
-				while (enumerator.MoveNext())
+				if (condition(item))
 				{
-					var current = enumerator.Current;
-					if (condition(current))
-					{
-						return Maybe.Just(current);
-					}
+					return Maybe.Just(item);
 				}
-
-				return Maybe.Nothing;
 			}
+
+			return Maybe<T>.Nothing;
 		}
 
 		public static Maybe<T> SingleOrNothing<T>(
-			this IEnumerable<T> items, 
+			this IEnumerable<T> items,
 			[InstantHandle] Func<T, bool> condition,
 			bool throwOnSeveral = true)
 		{
