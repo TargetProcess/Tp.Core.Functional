@@ -84,6 +84,7 @@
     <Compile Include="MaybeBenchmarks\Maybe_GetOrThrow.cs" />
     <Compile Include="MaybeEnumerableExtensionsBenchmarks\MaybeEnumerableExtensions_SelectMany_MaybeAsSource.cs" />
     <Compile Include="MaybeEnumerableExtensionsBenchmarks\MaybeEnumerableExtensions_FirstOrNothing_WithoutPredicate.cs" />
+    <Compile Include="MaybeEnumerableExtensionsBenchmarks\MaybeEnumerableExtensions_SingleOrNothing_WithPredicate.cs" />
     <Compile Include="MaybeEnumerableExtensionsBenchmarks\MaybeEnumerableExtensions_ToEnumerable.cs" />
     <Compile Include="NothingBenchmarks\Nothing_EqualsObject.cs" />
     <Compile Include="NothingBenchmarks\Nothing_OperatorEq.cs" />

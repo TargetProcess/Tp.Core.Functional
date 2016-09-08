@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Tp.Core.Annotations;
 
@@ -38,10 +39,10 @@ namespace Tp.Core
 					result[i] = resultSelector(source.Value, list[i]);
 				}
 
-				return Maybe.Return<IEnumerable<TResult>>(result);
+				return Maybe.Just<IEnumerable<TResult>>(result);
 			}
 
-			return Maybe.Return(collection.Select(maybeItem => resultSelector(source.Value, maybeItem)));
+			return Maybe.Just(collection.Select(maybeItem => resultSelector(source.Value, maybeItem)));
 		}
 
 		public static IEnumerable<T> ToEnumerable<T>(this Maybe<T> maybe)
@@ -60,11 +61,6 @@ namespace Tp.Core
 			return enumerator.MoveNext() ? Maybe.Just(enumerator.Current) : Maybe<T>.Nothing;
 		}
 
-		public static Maybe<T> SingleOrNothing<T>(this IEnumerable<T> items, bool throwOnSeveral = true)
-		{
-			return SingleOrNothing(items, x => true, throwOnSeveral);
-		}
-
 		public static Maybe<T> FirstOrNothing<T>(this IEnumerable<T> items, [InstantHandle] Func<T, bool> condition)
 		{
 			foreach (var item in items)
@@ -78,35 +74,29 @@ namespace Tp.Core
 			return Maybe<T>.Nothing;
 		}
 
+		public static Maybe<T> SingleOrNothing<T>(this IEnumerable<T> items, bool throwOnSeveral = true)
+		{
+			return SingleOrNothing(items, x => true, throwOnSeveral);
+		}
+
 		public static Maybe<T> SingleOrNothing<T>(
 			this IEnumerable<T> items,
 			[InstantHandle] Func<T, bool> condition,
 			bool throwOnSeveral = true)
 		{
-			var result = Maybe<T>.Nothing;
-			using (var enumerator = items.GetEnumerator())
+			var array = items as T[];
+			if (array != null)
 			{
-				while (enumerator.MoveNext())
-				{
-					var current = enumerator.Current;
-					if (condition(current))
-					{
-						if (result.HasValue)
-						{
-							if (throwOnSeveral)
-							{
-								throw new InvalidOperationException("The input sequence contains more than one element.");
-							}
-
-							return Maybe.Nothing;
-						}
-
-						result = Maybe.Just(current);
-					}
-				}
-
-				return result;
+				return SingleOrNothingArray(array, condition, throwOnSeveral);
 			}
+
+			var list = items as List<T>;
+			if (list != null)
+			{
+				return SingleOrNothingList(list, condition, throwOnSeveral);
+			}
+
+			return SingleOrNothingEnumerable(items, condition, throwOnSeveral);
 		}
 
 		public static IEnumerable<Maybe<TTo>> Bind<TTo, TFrom>(this IEnumerable<Maybe<TFrom>> m, Func<TFrom, Maybe<TTo>> f)
@@ -169,6 +159,91 @@ namespace Tp.Core
 		public static IEnumerable<T> EmptyIfNothing<T>(this Maybe<IEnumerable<T>> items)
 		{
 			return items.GetOrDefault(Enumerable.Empty<T>());
+		}
+
+		private static Maybe<T> SingleOrNothingEnumerable<T>(
+			IEnumerable<T> items,
+			[InstantHandle] Func<T, bool> condition,
+			bool throwOnSeveral = true)
+		{
+			var result = Maybe<T>.Nothing;
+
+			foreach (var item in items)
+			{
+				if (SingleOrNothingProcessItem(condition, item, throwOnSeveral, ref result))
+				{
+					break;
+				}
+			}
+
+			return result;
+		}
+
+		[SuppressMessage("ReSharper", "ForCanBeConvertedToForeach")]
+		[SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")]
+		private static Maybe<T> SingleOrNothingArray<T>(
+			T[] items,
+			[InstantHandle] Func<T, bool> condition,
+			bool throwOnSeveral = true)
+		{
+			var result = Maybe<T>.Nothing;
+
+			for (var i = 0; i < items.Length; i++)
+			{
+				if (SingleOrNothingProcessItem(condition, items[i], throwOnSeveral, ref result))
+				{
+					break;
+				}
+			}
+
+			return result;
+		}
+
+		[SuppressMessage("ReSharper", "ForCanBeConvertedToForeach")]
+		private static Maybe<T> SingleOrNothingList<T>(
+			List<T> items,
+			[InstantHandle] Func<T, bool> condition,
+			bool throwOnSeveral = true)
+		{
+			var result = Maybe<T>.Nothing;
+
+			for (var i = 0; i < items.Count; i++)
+			{
+				if (SingleOrNothingProcessItem(condition, items[i], throwOnSeveral, ref result))
+				{
+					break;
+				}
+			}
+
+			return result;
+		}
+
+		private static bool SingleOrNothingProcessItem<T>(
+			Func<T, bool> condition,
+			T item,
+			bool throwOnSeveral,
+			ref Maybe<T> result)
+		{
+			if (!condition(item))
+			{
+				return false;
+			}
+
+			if (result.HasValue)
+			{
+				if (throwOnSeveral)
+				{
+					throw new InvalidOperationException("The input sequence contains more than one element.");
+				}
+
+				result = Maybe<T>.Nothing;
+				return true;
+			}
+			else
+			{
+				result = Maybe.Just(item);
+				return false;
+			}
 		}
 	}
 }
