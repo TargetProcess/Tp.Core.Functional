@@ -104,9 +104,23 @@ namespace Tp.Core
 			return SingleOrNothingEnumerable(items, condition, throwOnSeveral);
 		}
 
-		public static IEnumerable<Maybe<TTo>> Bind<TTo, TFrom>(this IEnumerable<Maybe<TFrom>> m, Func<TFrom, Maybe<TTo>> f)
+		public static IEnumerable<Maybe<TTo>> Bind<TTo, TFrom>(
+			this IEnumerable<Maybe<TFrom>> source,
+			Func<TFrom, Maybe<TTo>> selector)
 		{
-			return m.Select(x => x.Bind(f));
+			var array = source as Maybe<TFrom>[];
+			if (array != null)
+			{
+				return BindArray(selector, array);
+			}
+
+			var list = source as IList<Maybe<TFrom>>;
+			if (list != null)
+			{
+				return BindList(selector, list);
+			}
+
+			return source.Select(item => item.Bind(selector));
 		}
 
 		/// <summary>
@@ -286,6 +300,30 @@ namespace Tp.Core
 				result = Maybe.Just(item);
 				return false;
 			}
+		}
+
+		private static IEnumerable<Maybe<TTo>> BindArray<TTo, TFrom>(Func<TFrom, Maybe<TTo>> selector, Maybe<TFrom>[] array)
+		{
+			var result = new Maybe<TTo>[array.Length];
+
+			for (var i = 0; i < array.Length; i++)
+			{
+				result[i] = array[i].Bind(selector);
+			}
+
+			return result;
+		}
+
+		private static IEnumerable<Maybe<TTo>> BindList<TTo, TFrom>(Func<TFrom, Maybe<TTo>> selector, IList<Maybe<TFrom>> list)
+		{
+			var result = new Maybe<TTo>[list.Count];
+
+			for (var i = 0; i < list.Count; i++)
+			{
+				result[i] = list[i].Bind(selector);
+			}
+
+			return result;
 		}
 	}
 }
