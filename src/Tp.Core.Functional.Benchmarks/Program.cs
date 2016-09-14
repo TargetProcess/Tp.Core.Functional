@@ -32,6 +32,7 @@ namespace Tp.Core.Functional.Benchmarks
 			RunBenchmark<MaybeEnumerableExtensions_ToEnumerable>();
 			RunBenchmark<MaybeEnumerableExtensions_FirstOrNothing_WithoutPredicate>();
 			RunBenchmark<MaybeEnumerableExtensions_SingleOrNothing_WithPredicate>();
+			RunBenchmark<MaybeEnumerableExtensions_SingleOrNothing_WithoutPredicate>();
 			RunBenchmark<MaybeEnumerableExtensions_Bind>();
 		}
 

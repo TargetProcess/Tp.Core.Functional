@@ -85,6 +85,7 @@
     <Compile Include="MaybeEnumerableExtensionsBenchmarks\MaybeEnumerableExtensions_SelectMany_EnumerableAsSource.cs" />
     <Compile Include="MaybeEnumerableExtensionsBenchmarks\MaybeEnumerableExtensions_SelectMany_MaybeAsSource.cs" />
     <Compile Include="MaybeEnumerableExtensionsBenchmarks\MaybeEnumerableExtensions_FirstOrNothing_WithoutPredicate.cs" />
+    <Compile Include="MaybeEnumerableExtensionsBenchmarks\MaybeEnumerableExtensions_SingleOrNothing_WithoutPredicate.cs" />
     <Compile Include="MaybeEnumerableExtensionsBenchmarks\MaybeEnumerableExtensions_SingleOrNothing_WithPredicate.cs" />
     <Compile Include="MaybeEnumerableExtensionsBenchmarks\MaybeEnumerableExtensions_Bind.cs" />
     <Compile Include="MaybeEnumerableExtensionsBenchmarks\MaybeEnumerableExtensions_ToEnumerable.cs" />

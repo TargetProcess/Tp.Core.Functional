@@ -81,7 +81,19 @@ namespace Tp.Core
 
 		public static Maybe<T> SingleOrNothing<T>(this IEnumerable<T> items, bool throwOnSeveral = true)
 		{
-			return SingleOrNothing(items, x => true, throwOnSeveral);
+			var array = items as T[];
+			if (array != null)
+			{
+				return SingleOrNothingArray(array, throwOnSeveral);
+			}
+
+			var list = items as IList<T>;
+			if (list != null)
+			{
+				return SingleOrNothingList(list, throwOnSeveral);
+			}
+
+			return SingleOrNothingEnumerable(items, throwOnSeveral);
 		}
 
 		public static Maybe<T> SingleOrNothing<T>(
@@ -142,7 +154,7 @@ namespace Tp.Core
 				}
 			}
 
-			return Maybe.Just((IEnumerable<T>) result.AsReadOnly());
+			return Maybe.Just((IEnumerable<T>)result.AsReadOnly());
 		}
 
 		public static IEnumerable<T> Choose<T>(this IEnumerable<Maybe<T>> items)
@@ -215,6 +227,68 @@ namespace Tp.Core
 			return selectionResult.HasValue
 				? Maybe.Just(resultSelector(sourceItem, selectionResult.Value))
 				: Maybe<TResult>.Nothing;
+		}
+
+		private static Maybe<T> SingleOrNothingArray<T>(T[] array, bool throwOnSeveral)
+		{
+			if (array.Length == 0)
+			{
+				return Maybe.Nothing;
+			}
+
+			if (array.Length == 1)
+			{
+				return Maybe.Just(array[0]);
+			}
+
+			if (throwOnSeveral)
+			{
+				throw new InvalidOperationException("The input sequence contains more than one element.");
+			}
+
+			return Maybe<T>.Nothing;
+		}
+
+		private static Maybe<T> SingleOrNothingList<T>(IList<T> list, bool throwOnSeveral)
+		{
+			if (list.Count == 0)
+			{
+				return Maybe<T>.Nothing;
+			}
+
+			if (list.Count == 1)
+			{
+				return Maybe.Just(list[0]);
+			}
+
+			if (throwOnSeveral)
+			{
+				throw new InvalidOperationException("The input sequence contains more than one element.");
+			}
+
+			return Maybe<T>.Nothing;
+		}
+
+		private static Maybe<T> SingleOrNothingEnumerable<T>(IEnumerable<T> items, bool throwOnSeveral)
+		{
+			var enumerator = items.GetEnumerator();
+			if (!enumerator.MoveNext())
+			{
+				return Maybe<T>.Nothing;
+			}
+
+			var first = enumerator.Current;
+			if (!enumerator.MoveNext())
+			{
+				return Maybe.Just(first);
+			}
+
+			if (throwOnSeveral)
+			{
+				throw new InvalidOperationException("The input sequence contains more than one element.");
+			}
+
+			return Maybe<T>.Nothing;
 		}
 
 		private static Maybe<T> SingleOrNothingEnumerable<T>(
