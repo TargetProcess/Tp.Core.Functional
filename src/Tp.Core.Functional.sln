@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuGet", "NuGet", "{73AF6B0B-1AE6-4D37-914E-77C0914F98E7}"
 	ProjectSection(SolutionItems) = preProject
@@ -13,6 +13,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tp.Core.Functional", "Tp.Core.Functional\Tp.Core.Functional.csproj", "{0451BAEF-DF2E-4B98-8644-94EE9415E389}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tp.Core.Functional.Tests", "Tp.Core.Functional.Tests\Tp.Core.Functional.Tests.csproj", "{8A89D9D0-6EA9-44A4-BBE2-4627CCBED061}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tp.Core.Functional.Benchmarks", "Tp.Core.Functional.Benchmarks\Tp.Core.Functional.Benchmarks.csproj", "{6BDD8316-9673-4029-99BB-9670759F0376}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -28,6 +30,10 @@ Global
 		{8A89D9D0-6EA9-44A4-BBE2-4627CCBED061}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A89D9D0-6EA9-44A4-BBE2-4627CCBED061}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8A89D9D0-6EA9-44A4-BBE2-4627CCBED061}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BDD8316-9673-4029-99BB-9670759F0376}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BDD8316-9673-4029-99BB-9670759F0376}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BDD8316-9673-4029-99BB-9670759F0376}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BDD8316-9673-4029-99BB-9670759F0376}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

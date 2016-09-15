@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Tp.Core.Annotations;
 
@@ -7,79 +8,131 @@ namespace Tp.Core
 {
 	public static class MaybeEnumerableExtensions
 	{
-		public static IEnumerable<Maybe<TResult>> SelectMany<TSource, TMaybe, TResult>(this IEnumerable<TSource> source,
-			Func<TSource, Maybe<TMaybe>> maybeSelector, Func<TSource, TMaybe, TResult> resultSelector)
+		public static IEnumerable<Maybe<TResult>> SelectMany<TSource, TMaybe, TResult>(
+			this IEnumerable<TSource> source,
+			Func<TSource, Maybe<TMaybe>> maybeSelector,
+			Func<TSource, TMaybe, TResult> resultSelector)
 		{
-			return source.Select(sourceItem => maybeSelector(sourceItem).Select(maybeItem => resultSelector(sourceItem, maybeItem)));
+			var list = source as IList<TSource>;
+			if (list != null)
+			{
+				return SelectManyList(maybeSelector, resultSelector, list);
+			}
+
+			return SelectManyIterator(source, maybeSelector, resultSelector);
 		}
 
-		public static Maybe<IEnumerable<TResult>> SelectMany<TSource, TCollection, TResult>(this Maybe<TSource> source,
-			[InstantHandle] Func<TSource, IEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, TResult> resultSelector)
+		public static Maybe<IEnumerable<TResult>> SelectMany<TSource, TCollection, TResult>(
+			this Maybe<TSource> source,
+			[InstantHandle] Func<TSource, IEnumerable<TCollection>> collectionSelector,
+			Func<TSource, TCollection, TResult> resultSelector)
 		{
-			return source.Select(sourceItem => collectionSelector(sourceItem).Select(maybeItem => resultSelector(sourceItem, maybeItem)));
+			if (!source.HasValue)
+			{
+				return Maybe<IEnumerable<TResult>>.Nothing;
+			}
+
+			var collection = collectionSelector(source.Value);
+
+			var list = collection as IList<TCollection>;
+			if (list != null)
+			{
+				var result = new TResult[list.Count];
+
+				for (var i = 0; i < list.Count; i++)
+				{
+					result[i] = resultSelector(source.Value, list[i]);
+				}
+
+				return Maybe.Just<IEnumerable<TResult>>(result);
+			}
+
+			return Maybe.Just(collection.Select(maybeItem => resultSelector(source.Value, maybeItem)));
 		}
 
 		public static IEnumerable<T> ToEnumerable<T>(this Maybe<T> maybe)
 		{
-			if (maybe.HasValue)
+			if (!maybe.HasValue)
 			{
-				yield return maybe.Value;
+				return new T[0];
 			}
+
+			return new[] {maybe.Value};
 		}
 
 		public static Maybe<T> FirstOrNothing<T>(this IEnumerable<T> items)
 		{
-			return FirstOrNothing(items, x => true);
-		}
-
-		public static Maybe<T> SingleOrNothing<T>(this IEnumerable<T> items, bool throwOnSeveral = true)
-		{
-			return SingleOrNothing(items, x => true, throwOnSeveral);
+			var enumerator = items.GetEnumerator();
+			return enumerator.MoveNext() ? Maybe.Just(enumerator.Current) : Maybe<T>.Nothing;
 		}
 
 		public static Maybe<T> FirstOrNothing<T>(this IEnumerable<T> items, [InstantHandle] Func<T, bool> condition)
 		{
-			using (var enumerator = items.GetEnumerator())
+			foreach (var item in items)
 			{
-				while (enumerator.MoveNext())
+				if (condition(item))
 				{
-					var current = enumerator.Current;
-					if (condition(current))
-						return Maybe.Just(current);
+					return Maybe.Just(item);
 				}
-				return Maybe.Nothing;
 			}
+
+			return Maybe<T>.Nothing;
 		}
 
-		public static Maybe<T> SingleOrNothing<T>(this IEnumerable<T> items, [InstantHandle] Func<T, bool> condition, bool throwOnSeveral = true)
+		public static Maybe<T> SingleOrNothing<T>(this IEnumerable<T> items, bool throwOnSeveral = true)
 		{
-			var result = Maybe<T>.Nothing;
-			using (var enumerator = items.GetEnumerator())
+			var array = items as T[];
+			if (array != null)
 			{
-				while (enumerator.MoveNext())
-				{
-					var current = enumerator.Current;
-					if (condition(current))
-					{
-						if (result.HasValue)
-						{
-							if (throwOnSeveral)
-							{
-								throw new InvalidOperationException("The input sequence contains more than one element.");
-							}
-							return Maybe.Nothing;
-						}
-
-						result = Maybe.Just(current);
-					}
-				}
-				return result;
+				return SingleOrNothingArray(array, throwOnSeveral);
 			}
+
+			var list = items as IList<T>;
+			if (list != null)
+			{
+				return SingleOrNothingList(list, throwOnSeveral);
+			}
+
+			return SingleOrNothingEnumerable(items, throwOnSeveral);
 		}
 
-		public static IEnumerable<Maybe<TTo>> Bind<TTo, TFrom>(this IEnumerable<Maybe<TFrom>> m, Func<TFrom, Maybe<TTo>> f)
+		public static Maybe<T> SingleOrNothing<T>(
+			this IEnumerable<T> items,
+			[InstantHandle] Func<T, bool> condition,
+			bool throwOnSeveral = true)
 		{
-			return m.Select(x => x.Bind(f));
+			var array = items as T[];
+			if (array != null)
+			{
+				return SingleOrNothingArray(array, condition, throwOnSeveral);
+			}
+
+			var list = items as List<T>;
+			if (list != null)
+			{
+				return SingleOrNothingList(list, condition, throwOnSeveral);
+			}
+
+			return SingleOrNothingEnumerable(items, condition, throwOnSeveral);
+		}
+
+		public static IEnumerable<Maybe<TTo>> Bind<TTo, TFrom>(
+			this IEnumerable<Maybe<TFrom>> source,
+			Func<TFrom, Maybe<TTo>> selector)
+		{
+			var array = source as Maybe<TFrom>[];
+			if (array != null)
+			{
+				return BindArray(selector, array);
+			}
+
+			var list = source as IList<Maybe<TFrom>>;
+			if (list != null)
+			{
+				return BindList(selector, list);
+			}
+
+			return source.Select(item => item.Bind(selector));
 		}
 
 		/// <summary>
@@ -88,28 +141,46 @@ namespace Tp.Core
 		public static Maybe<IEnumerable<T>> Sequence<T>(this IEnumerable<Maybe<T>> parts)
 		{
 			var result = new List<T>();
+
 			foreach (var maybe in parts)
 			{
-				if (maybe.HasValue)
+				if (!maybe.HasValue)
 				{
-					result.Add(maybe.Value);
+					return Maybe<IEnumerable<T>>.Nothing;
 				}
-				else
-				{
-					return Maybe.Nothing;
-				}
+
+				result.Add(maybe.Value);
 			}
-			return Maybe.Just((IEnumerable<T>)result.AsReadOnly());
+
+			return Maybe.Just<IEnumerable<T>>(result);
 		}
 
 		public static IEnumerable<T> Choose<T>(this IEnumerable<Maybe<T>> items)
 		{
-			return items.Choose(x => x);
+			var array = items as Maybe<T>[];
+			if (array != null)
+			{
+				return ChooseArray(array);
+			}
+
+			var list = items as IList<Maybe<T>>;
+			if (list != null)
+			{
+				return ChooseList(list);
+			}
+
+			return ChooseIterator(items);
 		}
 
 		public static IEnumerable<TResult> Choose<T, TResult>(this IEnumerable<T> items, Func<T, Maybe<TResult>> f)
 		{
-			return items.Choose(f, (_, x) => x);
+			var list = items as IList<T>;
+			if (list != null)
+			{
+				return ChooseList(list, f);
+			}
+
+			return ChooseIterator(items, f);
 		}
 
 		public static IEnumerable<TResult> Choose<T, TIntermediate, TResult>(
@@ -129,12 +200,294 @@ namespace Tp.Core
 
 		public static Maybe<IEnumerable<T>> NothingIfEmpty<T>(this ICollection<T> xs)
 		{
-			return xs.Any() ? Maybe.Return(xs.AsEnumerable()) : Maybe.Nothing;
+			return xs.Count > 0 ? Maybe.Just<IEnumerable<T>>(xs) : Maybe<IEnumerable<T>>.Nothing;
 		}
 
 		public static IEnumerable<T> EmptyIfNothing<T>(this Maybe<IEnumerable<T>> items)
 		{
 			return items.GetOrDefault(Enumerable.Empty<T>());
+		}
+
+		[SuppressMessage("ReSharper", "ForCanBeConvertedToForeach")]
+		private static IEnumerable<T> ChooseList<T>(IList<Maybe<T>> list)
+		{
+			var result = new List<T>();
+
+			for (var i = 0; i < list.Count; i++)
+			{
+				ChooseProcessItem(list[i], result);
+			}
+
+			return result;
+		}
+
+		[SuppressMessage("ReSharper", "ForCanBeConvertedToForeach")]
+		private static IEnumerable<T> ChooseArray<T>(Maybe<T>[] array)
+		{
+			var result = new List<T>();
+
+			for (var i = 0; i < array.Length; i++)
+			{
+				ChooseProcessItem(array[i], result);
+			}
+
+			return result;
+		}
+
+		private static IEnumerable<T> ChooseIterator<T>(IEnumerable<Maybe<T>> items)
+		{
+			foreach (var item in items)
+			{
+				if (item.HasValue)
+				{
+					yield return item.Value;
+				}
+			}
+		}
+
+		private static void ChooseProcessItem<T>(Maybe<T> item, List<T> result)
+		{
+			if (item.HasValue)
+			{
+				result.Add(item.Value);
+			}
+		}
+
+		private static IEnumerable<Maybe<TResult>> SelectManyIterator<TSource, TMaybe, TResult>(
+			IEnumerable<TSource> source,
+			Func<TSource, Maybe<TMaybe>> maybeSelector,
+			Func<TSource, TMaybe, TResult> resultSelector)
+		{
+			foreach (var item in source)
+			{
+				yield return GetResultItemForSelectMany(item, maybeSelector, resultSelector);
+			}
+		}
+
+		private static Maybe<TResult>[] SelectManyList<TSource, TMaybe, TResult>(
+			Func<TSource, Maybe<TMaybe>> maybeSelector,
+			Func<TSource, TMaybe, TResult> resultSelector,
+			IList<TSource> list)
+		{
+			var result = new Maybe<TResult>[list.Count];
+
+			for (var i = 0; i < list.Count; i++)
+			{
+				result[i] = GetResultItemForSelectMany(list[i], maybeSelector, resultSelector);
+			}
+
+			return result;
+		}
+
+		private static Maybe<TResult> GetResultItemForSelectMany<TSource, TMaybe, TResult>(
+			TSource sourceItem,
+			Func<TSource, Maybe<TMaybe>> maybeSelector,
+			Func<TSource, TMaybe, TResult> resultSelector)
+		{
+			var selectionResult = maybeSelector(sourceItem);
+			return selectionResult.HasValue
+				? Maybe.Just(resultSelector(sourceItem, selectionResult.Value))
+				: Maybe<TResult>.Nothing;
+		}
+
+		private static Maybe<T> SingleOrNothingArray<T>(T[] array, bool throwOnSeveral)
+		{
+			if (array.Length == 0)
+			{
+				return Maybe.Nothing;
+			}
+
+			if (array.Length == 1)
+			{
+				return Maybe.Just(array[0]);
+			}
+
+			if (throwOnSeveral)
+			{
+				throw new InvalidOperationException("The input sequence contains more than one element.");
+			}
+
+			return Maybe<T>.Nothing;
+		}
+
+		private static Maybe<T> SingleOrNothingList<T>(IList<T> list, bool throwOnSeveral)
+		{
+			if (list.Count == 0)
+			{
+				return Maybe<T>.Nothing;
+			}
+
+			if (list.Count == 1)
+			{
+				return Maybe.Just(list[0]);
+			}
+
+			if (throwOnSeveral)
+			{
+				throw new InvalidOperationException("The input sequence contains more than one element.");
+			}
+
+			return Maybe<T>.Nothing;
+		}
+
+		private static Maybe<T> SingleOrNothingEnumerable<T>(IEnumerable<T> items, bool throwOnSeveral)
+		{
+			var enumerator = items.GetEnumerator();
+			if (!enumerator.MoveNext())
+			{
+				return Maybe<T>.Nothing;
+			}
+
+			var first = enumerator.Current;
+			if (!enumerator.MoveNext())
+			{
+				return Maybe.Just(first);
+			}
+
+			if (throwOnSeveral)
+			{
+				throw new InvalidOperationException("The input sequence contains more than one element.");
+			}
+
+			return Maybe<T>.Nothing;
+		}
+
+		private static Maybe<T> SingleOrNothingEnumerable<T>(
+			IEnumerable<T> items,
+			[InstantHandle] Func<T, bool> condition,
+			bool throwOnSeveral = true)
+		{
+			var result = Maybe<T>.Nothing;
+
+			foreach (var item in items)
+			{
+				if (SingleOrNothingProcessItem(condition, item, throwOnSeveral, ref result))
+				{
+					break;
+				}
+			}
+
+			return result;
+		}
+
+		[SuppressMessage("ReSharper", "ForCanBeConvertedToForeach")]
+		[SuppressMessage("ReSharper", "SuggestBaseTypeForParameter")]
+		private static Maybe<T> SingleOrNothingArray<T>(
+			T[] items,
+			[InstantHandle] Func<T, bool> condition,
+			bool throwOnSeveral = true)
+		{
+			var result = Maybe<T>.Nothing;
+
+			for (var i = 0; i < items.Length; i++)
+			{
+				if (SingleOrNothingProcessItem(condition, items[i], throwOnSeveral, ref result))
+				{
+					break;
+				}
+			}
+
+			return result;
+		}
+
+		[SuppressMessage("ReSharper", "ForCanBeConvertedToForeach")]
+		private static Maybe<T> SingleOrNothingList<T>(
+			List<T> items,
+			[InstantHandle] Func<T, bool> condition,
+			bool throwOnSeveral = true)
+		{
+			var result = Maybe<T>.Nothing;
+
+			for (var i = 0; i < items.Count; i++)
+			{
+				if (SingleOrNothingProcessItem(condition, items[i], throwOnSeveral, ref result))
+				{
+					break;
+				}
+			}
+
+			return result;
+		}
+
+		private static bool SingleOrNothingProcessItem<T>(
+			Func<T, bool> condition,
+			T item,
+			bool throwOnSeveral,
+			ref Maybe<T> result)
+		{
+			if (!condition(item))
+			{
+				return false;
+			}
+
+			if (result.HasValue)
+			{
+				if (throwOnSeveral)
+				{
+					throw new InvalidOperationException("The input sequence contains more than one element.");
+				}
+
+				result = Maybe<T>.Nothing;
+				return true;
+			}
+			else
+			{
+				result = Maybe.Just(item);
+				return false;
+			}
+		}
+
+		private static IEnumerable<Maybe<TTo>> BindArray<TTo, TFrom>(Func<TFrom, Maybe<TTo>> selector, Maybe<TFrom>[] array)
+		{
+			var result = new Maybe<TTo>[array.Length];
+
+			for (var i = 0; i < array.Length; i++)
+			{
+				result[i] = array[i].Bind(selector);
+			}
+
+			return result;
+		}
+
+		private static IEnumerable<Maybe<TTo>> BindList<TTo, TFrom>(Func<TFrom, Maybe<TTo>> selector, IList<Maybe<TFrom>> list)
+		{
+			var result = new Maybe<TTo>[list.Count];
+
+			for (var i = 0; i < list.Count; i++)
+			{
+				result[i] = list[i].Bind(selector);
+			}
+
+			return result;
+		}
+
+		[SuppressMessage("ReSharper", "ForCanBeConvertedToForeach")]
+		private static IEnumerable<TResult> ChooseList<T, TResult>(IList<T> items, Func<T, Maybe<TResult>> selector)
+		{
+			var result = new List<TResult>();
+
+			for (var i = 0; i < items.Count; i++)
+			{
+				var selectedValue = selector(items[i]);
+				if (selectedValue.HasValue)
+				{
+					result.Add(selectedValue.Value);
+				}
+			}
+
+			return result;
+		}
+
+		private static IEnumerable<TResult> ChooseIterator<T, TResult>(IEnumerable<T> items, Func<T, Maybe<TResult>> selector)
+		{
+			foreach (var item in items)
+			{
+				var selectedValue = selector(item);
+				if (selectedValue.HasValue)
+				{
+					yield return selectedValue.Value;
+				}
+			}
 		}
 	}
 }
