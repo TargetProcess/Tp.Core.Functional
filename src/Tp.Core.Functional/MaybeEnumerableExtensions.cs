@@ -144,17 +144,15 @@ namespace Tp.Core
 
 			foreach (var maybe in parts)
 			{
-				if (maybe.HasValue)
+				if (!maybe.HasValue)
 				{
-					result.Add(maybe.Value);
+					return Maybe<IEnumerable<T>>.Nothing;
 				}
-				else
-				{
-					return Maybe.Nothing;
-				}
+
+				result.Add(maybe.Value);
 			}
 
-			return Maybe.Just((IEnumerable<T>)result.AsReadOnly());
+			return Maybe.Just<IEnumerable<T>>(result);
 		}
 
 		public static IEnumerable<T> Choose<T>(this IEnumerable<Maybe<T>> items)
