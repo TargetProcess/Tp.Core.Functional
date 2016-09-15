@@ -38,6 +38,7 @@ namespace Tp.Core.Functional.Benchmarks
 			RunBenchmark<MaybeEnumerableExtensions_Sequence>();
 			RunBenchmark<MaybeEnumerableExtensions_NothingIfEmpty>();
 			RunBenchmark<MaybeEnumerableExtensions_Choose_EnumerableMaybeAsSource>();
+			RunBenchmark<MaybeEnumerableExtensions_Choose_EnumerableAsSource>();
 
 			RunBenchmark<NullableExtensions_Choose>();
 		}

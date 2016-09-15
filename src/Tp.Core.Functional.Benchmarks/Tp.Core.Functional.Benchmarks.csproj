@@ -82,6 +82,7 @@
     <Compile Include="MaybeBenchmarks\Maybe_OperatorEq.cs" />
     <Compile Include="MaybeBenchmarks\Maybe_Equals.cs" />
     <Compile Include="MaybeBenchmarks\Maybe_GetOrThrow.cs" />
+    <Compile Include="MaybeEnumerableExtensionsBenchmarks\MaybeEnumerableExtensions_Choose_EnumerableAsSource.cs" />
     <Compile Include="MaybeEnumerableExtensionsBenchmarks\MaybeEnumerableExtensions_SelectMany_EnumerableAsSource.cs" />
     <Compile Include="MaybeEnumerableExtensionsBenchmarks\MaybeEnumerableExtensions_SelectMany_MaybeAsSource.cs" />
     <Compile Include="MaybeEnumerableExtensionsBenchmarks\MaybeEnumerableExtensions_FirstOrNothing_WithoutPredicate.cs" />

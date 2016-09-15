@@ -174,7 +174,13 @@ namespace Tp.Core
 
 		public static IEnumerable<TResult> Choose<T, TResult>(this IEnumerable<T> items, Func<T, Maybe<TResult>> f)
 		{
-			return Choose(items, f, (_, x) => x);
+			var list = items as IList<T>;
+			if (list != null)
+			{
+				return ChooseList(list, f);
+			}
+
+			return ChooseIterator(items, f);
 		}
 
 		public static IEnumerable<TResult> Choose<T, TIntermediate, TResult>(
@@ -453,6 +459,35 @@ namespace Tp.Core
 			}
 
 			return result;
+		}
+
+		[SuppressMessage("ReSharper", "ForCanBeConvertedToForeach")]
+		private static IEnumerable<TResult> ChooseList<T, TResult>(IList<T> items, Func<T, Maybe<TResult>> selector)
+		{
+			var result = new List<TResult>();
+
+			for (var i = 0; i < items.Count; i++)
+			{
+				var selectedValue = selector(items[i]);
+				if (selectedValue.HasValue)
+				{
+					result.Add(selectedValue.Value);
+				}
+			}
+
+			return result;
+		}
+
+		private static IEnumerable<TResult> ChooseIterator<T, TResult>(IEnumerable<T> items, Func<T, Maybe<TResult>> selector)
+		{
+			foreach (var item in items)
+			{
+				var selectedValue = selector(item);
+				if (selectedValue.HasValue)
+				{
+					yield return selectedValue.Value;
+				}
+			}
 		}
 	}
 }
