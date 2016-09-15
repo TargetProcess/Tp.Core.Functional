@@ -88,6 +88,7 @@
     <Compile Include="MaybeEnumerableExtensionsBenchmarks\MaybeEnumerableExtensions_NothingIfEmpty.cs" />
     <Compile Include="MaybeEnumerableExtensionsBenchmarks\MaybeEnumerableExtensions_SingleOrNothing_WithoutPredicate.cs" />
     <Compile Include="MaybeEnumerableExtensionsBenchmarks\MaybeEnumerableExtensions_SingleOrNothing_WithPredicate.cs" />
+    <Compile Include="MaybeEnumerableExtensionsBenchmarks\MaybeEnumerableExtensions_Choose_EnumerableMaybeAsSource.cs" />
     <Compile Include="MaybeEnumerableExtensionsBenchmarks\MaybeEnumerableExtensions_Bind.cs" />
     <Compile Include="MaybeEnumerableExtensionsBenchmarks\MaybeEnumerableExtensions_Sequence.cs" />
     <Compile Include="MaybeEnumerableExtensionsBenchmarks\MaybeEnumerableExtensions_ToEnumerable.cs" />

@@ -157,12 +157,24 @@ namespace Tp.Core
 
 		public static IEnumerable<T> Choose<T>(this IEnumerable<Maybe<T>> items)
 		{
-			return items.Choose(x => x);
+			var array = items as Maybe<T>[];
+			if (array != null)
+			{
+				return ChooseArray(array);
+			}
+
+			var list = items as IList<Maybe<T>>;
+			if (list != null)
+			{
+				return ChooseList(list);
+			}
+
+			return ChooseIterator(items);
 		}
 
 		public static IEnumerable<TResult> Choose<T, TResult>(this IEnumerable<T> items, Func<T, Maybe<TResult>> f)
 		{
-			return items.Choose(f, (_, x) => x);
+			return Choose(items, f, (_, x) => x);
 		}
 
 		public static IEnumerable<TResult> Choose<T, TIntermediate, TResult>(
@@ -188,6 +200,51 @@ namespace Tp.Core
 		public static IEnumerable<T> EmptyIfNothing<T>(this Maybe<IEnumerable<T>> items)
 		{
 			return items.GetOrDefault(Enumerable.Empty<T>());
+		}
+
+		[SuppressMessage("ReSharper", "ForCanBeConvertedToForeach")]
+		private static IEnumerable<T> ChooseList<T>(IList<Maybe<T>> list)
+		{
+			var result = new List<T>();
+
+			for (var i = 0; i < list.Count; i++)
+			{
+				ChooseProcessItem(list[i], result);
+			}
+
+			return result;
+		}
+
+		[SuppressMessage("ReSharper", "ForCanBeConvertedToForeach")]
+		private static IEnumerable<T> ChooseArray<T>(Maybe<T>[] array)
+		{
+			var result = new List<T>();
+
+			for (var i = 0; i < array.Length; i++)
+			{
+				ChooseProcessItem(array[i], result);
+			}
+
+			return result;
+		}
+
+		private static IEnumerable<T> ChooseIterator<T>(IEnumerable<Maybe<T>> items)
+		{
+			foreach (var item in items)
+			{
+				if (item.HasValue)
+				{
+					yield return item.Value;
+				}
+			}
+		}
+
+		private static void ChooseProcessItem<T>(Maybe<T> item, List<T> result)
+		{
+			if (item.HasValue)
+			{
+				result.Add(item.Value);
+			}
 		}
 
 		private static IEnumerable<Maybe<TResult>> SelectManyIterator<TSource, TMaybe, TResult>(
