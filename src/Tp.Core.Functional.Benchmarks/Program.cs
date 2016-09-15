@@ -7,6 +7,7 @@ using Tp.Core.Functional.Benchmarks.DictionaryExtensionsBenchmarks;
 using Tp.Core.Functional.Benchmarks.MaybeBenchmarks;
 using Tp.Core.Functional.Benchmarks.MaybeEnumerableExtensionsBenchmarks;
 using Tp.Core.Functional.Benchmarks.NothingBenchmarks;
+using Tp.Core.Functional.Benchmarks.NullableBenchmarks;
 
 namespace Tp.Core.Functional.Benchmarks
 {
@@ -37,6 +38,8 @@ namespace Tp.Core.Functional.Benchmarks
 			RunBenchmark<MaybeEnumerableExtensions_Sequence>();
 			RunBenchmark<MaybeEnumerableExtensions_NothingIfEmpty>();
 			RunBenchmark<MaybeEnumerableExtensions_Choose_EnumerableMaybeAsSource>();
+
+			RunBenchmark<NullableExtensions_Choose>();
 		}
 
 		private static Summary RunBenchmark<T>()

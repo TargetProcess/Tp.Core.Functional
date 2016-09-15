@@ -95,6 +95,7 @@
     <Compile Include="NothingBenchmarks\Nothing_EqualsObject.cs" />
     <Compile Include="NothingBenchmarks\Nothing_OperatorEq.cs" />
     <Compile Include="NothingBenchmarks\Nothing_OperatorNotEq.cs" />
+    <Compile Include="NullableBenchmarks\NullableExtensions_Choose.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
