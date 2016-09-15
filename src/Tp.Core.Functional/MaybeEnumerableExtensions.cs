@@ -182,7 +182,7 @@ namespace Tp.Core
 
 		public static Maybe<IEnumerable<T>> NothingIfEmpty<T>(this ICollection<T> xs)
 		{
-			return xs.Any() ? Maybe.Return(xs.AsEnumerable()) : Maybe.Nothing;
+			return xs.Count > 0 ? Maybe.Just<IEnumerable<T>>(xs) : Maybe<IEnumerable<T>>.Nothing;
 		}
 
 		public static IEnumerable<T> EmptyIfNothing<T>(this Maybe<IEnumerable<T>> items)
