@@ -31,7 +31,6 @@ namespace Tp.Core
 
 		public static Maybe<TResult> FromTryOut<TResult>([InstantHandle] TryDelegate<string, TResult> call, string value) => FromTryOut<string, TResult>(call, value);
 
-
 		public static Maybe<T> Do<T>(this Maybe<T> m, [NotNull][InstantHandle] Action<T> f, [InstantHandle] Action @else = null)
 		{
 			if (m.HasValue)
@@ -45,7 +44,6 @@ namespace Tp.Core
 			return m;
 		}
 
-
 		public static bool TryGetValue<T>(this Maybe<T> m, out T value)
 		{
 			if (m.HasValue)
@@ -58,18 +56,15 @@ namespace Tp.Core
 			return false;
 		}
 
-
 		public static Maybe<TTo> Select<TFrom, TTo>(this Maybe<TFrom> m, [InstantHandle] Func<TFrom, TTo> f)
 		{
 			return m.HasValue ? Return(f(m.Value)) : Maybe<TTo>.Nothing;
 		}
 
-
 		public static Maybe<T> Where<T>(this Maybe<T> m, Func<T, bool> condition)
 		{
 			return m.HasValue && condition(m.Value) ? m : Maybe<T>.Nothing;
 		}
-
 
 		public static Maybe<TTo> Bind<TFrom, TTo>(this Maybe<TFrom> m, [InstantHandle] Func<TFrom, Maybe<TTo>> f)
 		{
@@ -81,8 +76,6 @@ namespace Tp.Core
 			return maybe.HasValue ? maybe.Value.MaybeAs<T>(nullMeansNothing) : Maybe<T>.Nothing;
 		}
 
-
-
 		public static Try<TVal> ToTry<TVal, TError>(this Maybe<TVal> maybe, [InstantHandle] Func<TError> error)
 			where TError : Exception
 		{
@@ -92,7 +85,6 @@ namespace Tp.Core
 			}
 			return new Failure<TVal>(error());
 		}
-
 
 		public static TVal GetOrThrow<TVal, TError>(this Maybe<TVal> maybe, [InstantHandle] Func<TError> error)
 			where TError : Exception
@@ -104,7 +96,6 @@ namespace Tp.Core
 			return maybe.Value;
 		}
 
-
 		public static TVal GetOrThrow<TVal>(this Maybe<TVal> maybe, string error)
 		{
 			if (!maybe.HasValue)
@@ -114,13 +105,11 @@ namespace Tp.Core
 			return maybe.Value;
 		}
 
-
 		public static Maybe<TC> SelectMany<TA, TB, TC>(this Maybe<TA> ma, [InstantHandle] Func<TA, Maybe<TB>> func,
 			[InstantHandle] Func<TA, TB, TC> selector)
 		{
 			return ma.Bind(a => func(a).Bind(b => Just(selector(a, b))));
 		}
-
 
 		public static Maybe<TTo> MaybeAs<TTo>(this object o, bool nullMeansNothing = true)
 		{
@@ -129,15 +118,12 @@ namespace Tp.Core
 			return Maybe<TTo>.Nothing;
 		}
 
-
 		public static Maybe<T> NothingIfNull<T>(this T o) where T : class => ReturnIfNotNull(o);
-
 
 		public static Maybe<T> NothingIfNull<T>(this T? o) where T : struct
 		{
 			return o.HasValue ? Just(o.Value) : Maybe<T>.Nothing;
 		}
-
 
 		public static Maybe<T> OrElse<T>(this Maybe<T> maybe, [InstantHandle] Func<Maybe<T>> @else)
 		{
@@ -150,12 +136,10 @@ namespace Tp.Core
 			return maybe.HasValue ? maybe.Value : @else();
 		}
 
-
 		public static T GetOrDefault<T>(this Maybe<T> maybe, T @default = default(T))
 		{
 			return maybe.HasValue ? maybe.Value : @default;
 		}
-
 
 		public static Maybe<TResult> Either<T1, T2, TResult>(
 			this Maybe<T1> left, Maybe<T2> right,

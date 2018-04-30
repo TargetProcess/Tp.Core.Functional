@@ -37,7 +37,6 @@ namespace System
 			return value.HasValue ? func(value.Value) : null;
 		}
 
-
 		public static IEnumerable<TTo> Choose<T, TTo>(this IEnumerable<T> xs, Func<T, TTo?> map) where TTo : struct
 		{
 			return xs.Select(map).Where(m => m.HasValue).Select(m => m.Value);
@@ -45,7 +44,7 @@ namespace System
 
 		public static Maybe<T> ToMaybe<T>(this T? value) where T : struct
 		{
-			return value.HasValue ? Maybe.Just(value.Value) : Maybe.Nothing;
+			return value.HasValue ? Maybe.Just(value.Value) : Maybe<T>.Nothing;
 		}
 	}
 }
