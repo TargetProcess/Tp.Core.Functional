@@ -107,7 +107,11 @@ namespace Tp.Core
 
 		public static TVal GetOrThrow<TVal>(this Maybe<TVal> maybe, string error)
 		{
-			return maybe.GetOrThrow(() => new InvalidOperationException(error));
+			if (!maybe.HasValue)
+			{
+				throw new InvalidOperationException(error);
+			}
+			return maybe.Value;
 		}
 
 

@@ -8,7 +8,14 @@ namespace System.Collections.Generic
 	{
 		public static Maybe<TVal> GetValue<TKey, TVal>(this IDictionary<TKey, TVal> d, TKey k)
 		{
-			return k == null ? Maybe.Nothing : Maybe.FromTryOut<TKey, TVal>(d.TryGetValue, k);
+			if (k == null)
+			{
+				return Maybe.Nothing;
+			}
+
+			// Don't use FromTryOut here as it's 10x slower than direct call to d.TryGetValue
+			TVal val;
+			return d.TryGetValue(k, out val) ? Maybe.Just(val) : Maybe<TVal>.Nothing;
 		}
 	}
 }
