@@ -15,6 +15,7 @@
     <NeutralLanguage />
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>TpPublic.snk</AssemblyOriginatorKeyFile>
+    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
   </PropertyGroup>
 
 </Project>
