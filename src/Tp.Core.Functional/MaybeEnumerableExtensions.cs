@@ -99,7 +99,7 @@ namespace Tp.Core
 					return Maybe<IEnumerable<T>>.Nothing;
 				}
 			}
-			return Maybe.Just((IEnumerable<T>)result.AsReadOnly());
+			return Maybe.Just((IEnumerable<T>)result);
 		}
 
 		public static IEnumerable<T> Choose<T>(this IEnumerable<Maybe<T>> items)

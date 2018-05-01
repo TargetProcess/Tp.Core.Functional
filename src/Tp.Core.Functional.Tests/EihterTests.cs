@@ -15,12 +15,22 @@ namespace Tp.Core.Functional.Tests
 			var left = Either.CreateLeft<int, string>(1);
 			var right = Either.CreateRight<int, string>("s");
 
-			left.Switch(i => Assert.AreEqual(1, i), Fail);
-			Assert.AreEqual(1, Assert.Counter);
+		    var assertCount = 0;
+
+			left.Switch(i =>
+			{
+			    Assert.AreEqual(1, i);
+			    assertCount++;
+			}, Fail);
+			Assert.AreEqual(1, assertCount);
 
 
-			right.Switch(Fail, i => Assert.AreEqual("s", i));
-			Assert.AreEqual(2, Assert.Counter);
+			right.Switch(Fail, i =>
+			{
+			    Assert.AreEqual("s", i);
+			    assertCount++;
+			});
+			Assert.AreEqual(2, assertCount);
 
 
 			var result1 = left.Switch(i => i * 2, Fail<string, int>);
