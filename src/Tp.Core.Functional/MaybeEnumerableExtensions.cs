@@ -47,7 +47,7 @@ namespace Tp.Core
 					if (condition(current))
 						return Maybe.Just(current);
 				}
-				return Maybe.Nothing;
+				return Maybe<T>.Nothing;
 			}
 		}
 
@@ -67,7 +67,7 @@ namespace Tp.Core
 							{
 								throw new InvalidOperationException("The input sequence contains more than one element.");
 							}
-							return Maybe.Nothing;
+							return Maybe<T>.Nothing;
 						}
 
 						result = Maybe.Just(current);
@@ -96,10 +96,10 @@ namespace Tp.Core
 				}
 				else
 				{
-					return Maybe.Nothing;
+					return Maybe<IEnumerable<T>>.Nothing;
 				}
 			}
-			return Maybe.Just((IEnumerable<T>)result.AsReadOnly());
+			return Maybe.Just((IEnumerable<T>)result);
 		}
 
 		public static IEnumerable<T> Choose<T>(this IEnumerable<Maybe<T>> items)
@@ -129,7 +129,7 @@ namespace Tp.Core
 
 		public static Maybe<IEnumerable<T>> NothingIfEmpty<T>(this ICollection<T> xs)
 		{
-			return xs.Any() ? Maybe.Return(xs.AsEnumerable()) : Maybe.Nothing;
+			return xs.Any() ? Maybe.Return(xs.AsEnumerable()) : Maybe<IEnumerable<T>>.Nothing;
 		}
 
 		public static IEnumerable<T> EmptyIfNothing<T>(this Maybe<IEnumerable<T>> items)

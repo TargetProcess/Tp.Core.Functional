@@ -126,10 +126,19 @@ namespace Tp.Core.Functional.Tests
 		[Test]
 		public void SwitchTest()
 		{
-			_success.Switch(i => Assert.AreEqual(1, i), Fail);
-			_failure.Switch(Fail, Assert.IsInstanceOf<TestException>);
+		    var assertCounter = 0;
+			_success.Switch(i =>
+			{
+			    Assert.AreEqual(1, i);
+			    assertCounter++;
+			}, Fail);
+			_failure.Switch(Fail, e =>
+			{
+			    Assert.IsInstanceOf<TestException>(e);
+			    assertCounter++;
+			});
 
-			Assert.AreEqual(Assert.Counter, 2);
+			Assert.AreEqual(2, assertCounter);
 		}
 
 		[Test]
