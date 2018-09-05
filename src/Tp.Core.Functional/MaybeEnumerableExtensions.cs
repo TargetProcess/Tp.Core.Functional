@@ -13,7 +13,7 @@ namespace Tp.Core
 			return source.Select(sourceItem => maybeSelector(sourceItem).Select(maybeItem => resultSelector(sourceItem, maybeItem)));
 		}
 
-		public static Maybe<IEnumerable<TResult>> SelectMany<TSource, TCollection, TResult>(this Maybe<TSource> source,
+		public static Maybe<IEnumerable<TResult>> SelectMany<TSource, TCollection, TResult>(in this Maybe<TSource> source,
 			[InstantHandle] Func<TSource, IEnumerable<TCollection>> collectionSelector, Func<TSource, TCollection, TResult> resultSelector)
 		{
 			return source.Select(sourceItem => collectionSelector(sourceItem).Select(maybeItem => resultSelector(sourceItem, maybeItem)));

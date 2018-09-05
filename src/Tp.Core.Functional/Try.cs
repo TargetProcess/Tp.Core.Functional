@@ -37,7 +37,7 @@ namespace Tp.Core
 		T Value { get; }
 		bool IsSuccess { get; }
 		void Switch([InstantHandle]Action<T> sucess, [InstantHandle]Action<Exception> exception);
-		
+
 		Try<T> Recover([InstantHandle]Func<Exception, T> recover);
 		Try<T> Recover([InstantHandle]Func<Exception, Try<T>> recover);
 
@@ -58,7 +58,7 @@ namespace Tp.Core
 		public Maybe<T> ToMaybe() => Maybe.Just(Value);
 
 		public Either<T, Exception> ToEither() => Either.CreateLeft<T, Exception>(Value);
-		
+
 		public Try<U> Select<U>(Func<T, U> selector) => Try.Create(() => selector(Value));
 
 		public Try<T> Where(Func<T, bool> filter)
@@ -134,7 +134,7 @@ namespace Tp.Core
 		public Maybe<T> ToMaybe() => Maybe<T>.Nothing;
 
 		public Either<T, Exception> ToEither() => Either.CreateRight<T, Exception>(Exception);
-		
+
 		public Try<U> Select<U>(Func<T, U> selector) => new Failure<U>(_exception);
 
 		public Try<T> Where(Func<T, bool> filter) => this;

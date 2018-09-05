@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard1.0;net45</TargetFrameworks>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <Version>0.1.7</Version>
+    <Version>0.1.8</Version>
     <Authors>Targetprocess</Authors>
     <Company>Targetprocess</Company>
     <Description>This package includes implementation of Maybe, Try, Either with set of utility extension methods.</Description>
@@ -16,6 +16,7 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>TpPublic.snk</AssemblyOriginatorKeyFile>
     <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(DebugType)' == 'portable'">
@@ -24,7 +25,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="SourceLink.Create.CommandLine" Version="2.8.1" PrivateAssets="All" />
+    <PackageReference Include="SourceLink.Create.CommandLine" Version="2.8.3" PrivateAssets="All" />
   </ItemGroup>
 
 </Project>
