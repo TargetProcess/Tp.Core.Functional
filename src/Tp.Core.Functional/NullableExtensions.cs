@@ -39,7 +39,7 @@ namespace System
 
 		public static IEnumerable<TTo> Choose<T, TTo>(this IEnumerable<T> xs, Func<T, TTo?> map) where TTo : struct
 		{
-			return xs.Select(map).Where(m => m.HasValue).Select(m => m.Value);
+			return xs.Select(map).Where(m => m.HasValue).Select(m => m!.Value);
 		}
 
 		public static Maybe<T> ToMaybe<T>(this T? value) where T : struct

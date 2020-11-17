@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Tp.Core.Annotations;
 
+// ReSharper disable once CheckNamespace
 namespace Tp.Core
 {
 	public static class Maybe
@@ -13,7 +14,7 @@ namespace Tp.Core
 
 		public static Maybe<T> Return<T>(T v) => Just(v);
 
-		public static Maybe<T> ReturnIfNotNull<T>(T v)
+		public static Maybe<T> ReturnIfNotNull<T>(T? v)
 			where T : class
 		{
 			return v == null ? Maybe<T>.Nothing : Just(v);
@@ -23,15 +24,23 @@ namespace Tp.Core
 
 		public delegate bool TryDelegate<in TArg, TResult>(TArg value, out TResult result);
 
-		public static Maybe<TResult> FromTryOut<TArg, TResult>([InstantHandle] TryDelegate<TArg, TResult> call, TArg value)
+		public static Maybe<TResult> FromTryOut<TArg, TResult>(
+			[InstantHandle] TryDelegate<TArg, TResult> call,
+			TArg value)
 		{
-			TResult result;
-			return call(value, out result) ? Just(result) : Maybe<TResult>.Nothing;
+			return call(value, out var result) ? Just(result) : Maybe<TResult>.Nothing;
 		}
 
-		public static Maybe<TResult> FromTryOut<TResult>([InstantHandle] TryDelegate<string, TResult> call, string value) => FromTryOut<string, TResult>(call, value);
+		public static Maybe<TResult> FromTryOut<TResult>(
+			[InstantHandle] TryDelegate<string, TResult> call,
+			string value)
+		{
+			return FromTryOut<string, TResult>(call, value);
+		}
 
-		public static Maybe<T> Do<T>(this Maybe<T> m, [NotNull][InstantHandle] Action<T> f, [InstantHandle] Action @else = null)
+		public static Maybe<T> Do<T>(
+			this Maybe<T> m, [NotNull][InstantHandle] Action<T> f,
+			[InstantHandle] Action? @else = null)
 		{
 			if (m.HasValue)
 			{
@@ -52,7 +61,7 @@ namespace Tp.Core
 				return true;
 			}
 
-			value = default(T);
+			value = default!;
 			return false;
 		}
 
@@ -111,14 +120,18 @@ namespace Tp.Core
 			return ma.Bind(a => func(a).Bind(b => Just(selector(a, b))));
 		}
 
-		public static Maybe<TTo> MaybeAs<TTo>(this object o, bool nullMeansNothing = true)
+		public static Maybe<TTo> MaybeAs<TTo>(this object? o, bool nullMeansNothing = true)
 		{
 			if ((!nullMeansNothing && o == null) || o is TTo)
-				return Just((TTo) o);
+				return Just((TTo) o!);
+
 			return Maybe<TTo>.Nothing;
 		}
 
-		public static Maybe<T> NothingIfNull<T>(this T o) where T : class => ReturnIfNotNull(o);
+		public static Maybe<T> NothingIfNull<T>(this T? o) where T : class
+		{
+			return o == null ? Maybe<T>.Nothing : Just(o);
+		}
 
 		public static Maybe<T> NothingIfNull<T>(this T? o) where T : struct
 		{
@@ -136,7 +149,7 @@ namespace Tp.Core
 			return maybe.HasValue ? maybe.Value : @else();
 		}
 
-		public static T GetOrDefault<T>(this Maybe<T> maybe, T @default = default(T))
+		public static T GetOrDefault<T>(this Maybe<T> maybe, T @default = default)
 		{
 			return maybe.HasValue ? maybe.Value : @default;
 		}
@@ -170,7 +183,7 @@ namespace Tp.Core
 		}
 	}
 
-	public struct Maybe<T> : IMaybe
+	public readonly struct Maybe<T> : IMaybe, IEquatable<Maybe<T>>
 	{
 		public static readonly Maybe<T> Nothing = Maybe.Nothing;
 
@@ -178,7 +191,7 @@ namespace Tp.Core
 
 		public bool HasValue { get; }
 
-		object IMaybe.Value => Value;
+		object? IMaybe.Value => Value;
 
 		public T Value
 		{
@@ -192,30 +205,31 @@ namespace Tp.Core
 			}
 		}
 
+		// ReSharper disable once UnusedParameter.Global
 		public static implicit operator Maybe<T>(Nothing nothing)
 		{
 			return Nothing;
 		}
 
-
 		public static implicit operator Maybe<T>(T value)
 		{
-				var maybe = value as IMaybe;
-			return maybe != null && !maybe.HasValue ? Nothing : new Maybe<T>(value);
-				}
+			return value is IMaybe maybe && !maybe.HasValue ? Nothing : new Maybe<T>(value);
+		}
 
 		public bool Equals(Maybe<T> other)
 		{
 			return (!HasValue && !other.HasValue) || (other.HasValue && HasValue && Equals(other.Value, Value));
 		}
 
-		public override bool Equals(object obj)
+		public override bool Equals(object? obj)
 		{
 			if (ReferenceEquals(null, obj)) return false;
-			if (obj is Maybe<T>)
-				return Equals((Maybe<T>) obj);
-			var maybe = obj as IMaybe;
-			return maybe != null && !maybe.HasValue && !HasValue;
+			if (obj is Maybe<T> typed)
+			{
+				return Equals(typed);
+			}
+
+			return obj is IMaybe asInterface && !asInterface.HasValue && !HasValue;
 		}
 
 		public override int GetHashCode() => HasValue ? EqualityComparer<T>.Default.GetHashCode(Value) : 0;

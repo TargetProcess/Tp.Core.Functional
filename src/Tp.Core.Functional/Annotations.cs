@@ -15,6 +15,7 @@
  */
 
 using System;
+#nullable disable
 
 // ReSharper disable once CheckNamespace
 namespace Tp.Core.Annotations
@@ -65,7 +66,7 @@ namespace Tp.Core.Annotations
 	}
 
 	/// <summary>
-	/// Indicates that marked method builds string by format pattern and (optional) arguments. 
+	/// Indicates that marked method builds string by format pattern and (optional) arguments.
 	/// Parameter, which contains format string, should be given in constructor.
 	/// The format string should be in <see cref="string.Format(IFormatProvider,string,object[])"/> -like form
 	/// </summary>
@@ -96,7 +97,7 @@ namespace Tp.Core.Annotations
 	internal sealed class InvokerParameterNameAttribute : Attribute { }
 
 	/// <summary>
-	/// Indicates that the marked method is assertion method, i.e. it halts control flow if one of the conditions is satisfied. 
+	/// Indicates that the marked method is assertion method, i.e. it halts control flow if one of the conditions is satisfied.
 	/// To set the condition, mark one of the parameters with <see cref="AssertionConditionAttribute"/> attribute
 	/// </summary>
 	/// <seealso cref="AssertionConditionAttribute"/>
@@ -104,7 +105,7 @@ namespace Tp.Core.Annotations
 	internal sealed class AssertionMethodAttribute : Attribute { }
 
 	/// <summary>
-	/// Indicates the condition parameter of the assertion method. 
+	/// Indicates the condition parameter of the assertion method.
 	/// The method itself should be marked by <see cref="AssertionMethodAttribute"/> attribute.
 	/// The mandatory argument of the attribute is the assertion type.
 	/// </summary>
@@ -128,7 +129,7 @@ namespace Tp.Core.Annotations
 	}
 
 	/// <summary>
-	/// Specifies assertion type. If the assertion method argument satisifes the condition, then the execution continues. 
+	/// Specifies assertion type. If the assertion method argument satisifes the condition, then the execution continues.
 	/// Otherwise, execution is assumed to be halted
 	/// </summary>
 	internal enum AssertionConditionType
@@ -181,15 +182,15 @@ namespace Tp.Core.Annotations
 	internal sealed class CannotApplyEqualityOperatorAttribute : Attribute { }
 
 	/// <summary>
-	/// When applied to target attribute, specifies a requirement for any type which is marked with 
+	/// When applied to target attribute, specifies a requirement for any type which is marked with
 	/// target attribute to implement or inherit specific type or types
 	/// </summary>
 	/// <example>
 	/// <code>
 	/// [BaseTypeRequired(typeof(IComponent)] // Specify requirement
-	/// public class ComponentAttribute : Attribute 
+	/// public class ComponentAttribute : Attribute
 	/// {}
-	/// 
+	///
 	/// [Component] // ComponentAttribute requires implementing IComponent interface
 	/// public class MyComponent : IComponent
 	/// {}
@@ -349,7 +350,7 @@ namespace Tp.Core.Annotations
 	}
 
 	/// <summary>
-	/// Tells code analysis engine if the parameter is completely handled when the invoked method is on stack. 
+	/// Tells code analysis engine if the parameter is completely handled when the invoked method is on stack.
 	/// If the parameter is delegate, indicates that delegate is executed while the method is executed.
 	/// If the parameter is enumerable, indicates that it is enumerated while the method is executed.
 	/// </summary>

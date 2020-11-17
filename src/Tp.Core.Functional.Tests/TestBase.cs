@@ -8,13 +8,13 @@ namespace Tp.Core.Functional.Tests
 		protected static T Fail<T>()
 		{
 			Assert.Fail();
-			return default(T);
+			return default!;
 		}
 
 		protected static TRes Fail<TArg, TRes>(TArg arg)
 		{
 			Assert.Fail();
-			return default(TRes);
+			return default!;
 		}
 
 		protected static void Fail<T>(T arg)

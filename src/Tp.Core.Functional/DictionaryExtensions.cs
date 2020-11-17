@@ -14,8 +14,7 @@ namespace System.Collections.Generic
 			}
 
 			// Don't use FromTryOut here as it's 10x slower than direct call to d.TryGetValue
-			TVal val;
-			return dictionary.TryGetValue(key, out val) ? Maybe.Just(val) : Maybe<TVal>.Nothing;
+			return dictionary.TryGetValue(key, out var val) ? Maybe.Just(val) : Maybe<TVal>.Nothing;
 		}
 	}
 }

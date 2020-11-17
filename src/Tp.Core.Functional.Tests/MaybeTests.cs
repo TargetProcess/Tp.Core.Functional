@@ -241,7 +241,7 @@ namespace Tp.Core.Functional.Tests
 		[Test]
 		public void NothingIfNullTest()
 		{
-			object foo = null;
+			object? foo = null;
 			object bar = new object();
 			int? i = null;
 			int? j = 0;
