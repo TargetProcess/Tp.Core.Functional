@@ -18,14 +18,11 @@ namespace Tp.Core
 
 		public bool HasValue => false;
 
-		public object Value
-		{
-			get { throw new NotSupportedException(); }
-		}
+		public object Value => throw new NotSupportedException();
 
 		public bool Equals(Nothing other) => true;
 
-		public override bool Equals(object obj)
+		public override bool Equals(object? obj)
 		{
 			if (ReferenceEquals(null, obj)) return false;
 			return obj is Nothing || obj.MaybeAs<IMaybe>().Select(x => !x.HasValue).GetOrDefault();

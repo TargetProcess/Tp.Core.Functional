@@ -1,7 +1,7 @@
-﻿// 
+﻿//
 // Copyright (c) 2005-2015 TargetProcess. All rights reserved.
 // TargetProcess proprietary/confidential. Use is subject to license terms. Redistribution of this file is strictly forbidden.
-// 
+//
 
 using System;
 using NUnit.Framework;
@@ -26,7 +26,7 @@ namespace Tp.Core.Functional.Tests
 			Assert.AreEqual(_success, Try.Success(1));
 			Assert.IsFalse(_success.Equals(null));
 			// ReSharper disable once EqualExpressionComparison
-			Assert.IsTrue(_success.Equals(_success));
+			Assert.IsTrue(_success!.Equals(_success));
 		}
 
 		[Test]
