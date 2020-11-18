@@ -12,6 +12,8 @@
     <Copyright>Copyright Targetprocess 2020</Copyright>
     <PackageTags>maybe either try functional</PackageTags>
     <NeutralLanguage />
+    <LangVersion>8</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
