@@ -1,4 +1,5 @@
-﻿using Tp.Core;
+﻿using System.Diagnostics.CodeAnalysis;
+using Tp.Core;
 
 // ReSharper disable once CheckNamespace
 
@@ -6,7 +7,8 @@ namespace System.Collections.Generic
 {
 	public static class DictionaryExtensions
 	{
-		public static Maybe<TVal> GetValue<TKey, TVal>(this IDictionary<TKey, TVal> dictionary, TKey key)
+		public static Maybe<TVal> GetValue<TKey, TVal>(this IDictionary<TKey, TVal> dictionary, [AllowNull] TKey key)
+			where TVal : notnull
 		{
 			if (key == null)
 			{
@@ -14,8 +16,7 @@ namespace System.Collections.Generic
 			}
 
 			// Don't use FromTryOut here as it's 10x slower than direct call to d.TryGetValue
-			TVal val;
-			return dictionary.TryGetValue(key, out val) ? Maybe.Just(val) : Maybe<TVal>.Nothing;
+			return dictionary.TryGetValue(key, out var val) ? Maybe.Just(val) : Maybe<TVal>.Nothing;
 		}
 	}
 }

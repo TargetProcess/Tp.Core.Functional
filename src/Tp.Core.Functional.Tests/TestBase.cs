@@ -8,13 +8,13 @@ namespace Tp.Core.Functional.Tests
 		protected static T Fail<T>()
 		{
 			Assert.Fail();
-			return default(T);
+			return default!;
 		}
 
 		protected static TRes Fail<TArg, TRes>(TArg arg)
 		{
 			Assert.Fail();
-			return default(TRes);
+			return default!;
 		}
 
 		protected static void Fail<T>(T arg)
@@ -49,11 +49,13 @@ namespace Tp.Core.Functional.Tests
 		}
 
 		protected void AssertNothing<T>(Maybe<T> nothing)
+			where T : notnull
 		{
 			Assert.IsFalse(nothing.HasValue);
 		}
 
 		protected void AssertSome<T>(Maybe<T> maybe, T value)
+			where T : notnull
 		{
 			Assert.IsTrue(maybe.HasValue);
 			Assert.AreEqual(value, maybe.Value);

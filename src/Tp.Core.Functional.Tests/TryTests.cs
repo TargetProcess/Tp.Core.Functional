@@ -1,7 +1,7 @@
-﻿// 
+﻿//
 // Copyright (c) 2005-2015 TargetProcess. All rights reserved.
 // TargetProcess proprietary/confidential. Use is subject to license terms. Redistribution of this file is strictly forbidden.
-// 
+//
 
 using System;
 using NUnit.Framework;
@@ -26,7 +26,7 @@ namespace Tp.Core.Functional.Tests
 			Assert.AreEqual(_success, Try.Success(1));
 			Assert.IsFalse(_success.Equals(null));
 			// ReSharper disable once EqualExpressionComparison
-			Assert.IsTrue(_success.Equals(_success));
+			Assert.IsTrue(_success!.Equals(_success));
 		}
 
 		[Test]
@@ -144,24 +144,24 @@ namespace Tp.Core.Functional.Tests
 		[Test]
 		public void RecoverTypedTest()
 		{
-			AssertSuccess(_success.Recover<TestException>(e => Maybe.Nothing), 1);
-			AssertSuccess(_success.Recover<TestException>(e => Maybe.Just(2)), 1);
-			AssertSuccess(_success.Recover<ArgumentException>(e => Maybe.Nothing), 1);
-			AssertSuccess(_success.Recover<ArgumentException>(e => Maybe.Just(2)), 1);
-			AssertSuccess(_success.Recover<Exception>(e => Maybe.Nothing), 1);
-			AssertSuccess(_success.Recover<Exception>(e => Maybe.Just(2)), 1);
+			AssertSuccess(_success.Recover<int, TestException>(e => Maybe.Nothing), 1);
+			AssertSuccess(_success.Recover<int, TestException>(e => Maybe.Just(2)), 1);
+			AssertSuccess(_success.Recover<int, ArgumentException>(e => Maybe.Nothing), 1);
+			AssertSuccess(_success.Recover<int, ArgumentException>(e => Maybe.Just(2)), 1);
+			AssertSuccess(_success.Recover<int, Exception>(e => Maybe.Nothing), 1);
+			AssertSuccess(_success.Recover<int, Exception>(e => Maybe.Just(2)), 1);
 
 
-			AssertFailure<TestException>(_failure.Recover<TestException>(e => Maybe.Nothing));
-			AssertSuccess(_failure.Recover<TestException>(e => Maybe.Just(2)), 2);
-			AssertFailure<TestException>(_failure.Recover<ArgumentException>(e => Maybe.Nothing));
-			AssertFailure<TestException>(_failure.Recover<ArgumentException>(e => Maybe.Just(2)));
-			AssertFailure<TestException>(_failure.Recover<Exception>(e => Maybe.Nothing));
-			AssertSuccess(_failure.Recover<Exception>(e => Maybe.Just(2)), 2);
+			AssertFailure<TestException>(_failure.Recover<int, TestException>(e => Maybe.Nothing));
+			AssertSuccess(_failure.Recover<int, TestException>(e => Maybe.Just(2)), 2);
+			AssertFailure<TestException>(_failure.Recover<int, ArgumentException>(e => Maybe.Nothing));
+			AssertFailure<TestException>(_failure.Recover<int, ArgumentException>(e => Maybe.Just(2)));
+			AssertFailure<TestException>(_failure.Recover<int, Exception>(e => Maybe.Nothing));
+			AssertSuccess(_failure.Recover<int, Exception>(e => Maybe.Just(2)), 2);
 
 
-			AssertSuccess(_failure.Recover<ArgumentException>(e => 2)
-				.Recover<TestException>(e => 3), 3);
+			AssertSuccess(_failure.Recover<int, ArgumentException>(e => 2)
+				.Recover<int, TestException>(e => 3), 3);
 		}
 
 		[Test]
