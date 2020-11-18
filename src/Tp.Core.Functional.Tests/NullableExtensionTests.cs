@@ -65,7 +65,7 @@ namespace Tp.Core.Functional.Tests
 		public long? SelectManyTest(int? a, uint? b)
 		{
 			// ReSharper disable once PossibleInvalidOperationException
-			return a.SelectMany(aa => b, (aa, bb) => (long)(a + b));
+			return a.SelectMany(aa => b, (aa, bb) => (long) (aa + bb));
 		}
 	}
 }

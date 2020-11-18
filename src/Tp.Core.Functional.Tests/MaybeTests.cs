@@ -241,7 +241,7 @@ namespace Tp.Core.Functional.Tests
 		[Test]
 		public void NothingIfNullTest()
 		{
-			object foo = null;
+			object? foo = null;
 			object bar = new object();
 			int? i = null;
 			int? j = 0;
@@ -359,6 +359,19 @@ namespace Tp.Core.Functional.Tests
 		{
 			Assert.AreEqual(1, Maybe.Just(1).GetOrDefault(2));
 			Assert.AreEqual(2, Maybe<int>.Nothing.GetOrDefault(2));
+		}
+
+		[Test]
+		public void GetOrDefaultCSharpNullableTest()
+		{
+			// Known issue: `null!` is required here
+			// https://github.com/dotnet/roslyn/issues/40110
+			// ReSharper disable once RedundantArgumentDefaultValue
+			var value1 = Maybe<object>.Nothing.GetOrDefault(null);
+			Assert.IsNull(value1);
+
+			var value2 = Maybe<object>.Nothing.GetOrNull();
+			Assert.IsNull(value2);
 		}
 
 		[Test]

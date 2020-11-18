@@ -49,7 +49,7 @@ namespace Tp.Core
 
 			public void Switch(Action<TLeft> caseLeft, Action<TRight> caseRight) => caseLeft(Value);
 
-			public bool Equals(Left<TLeft, TRight> other)
+			public bool Equals(Left<TLeft, TRight>? other)
 			{
 				if (other == this)
 					return true;
@@ -58,7 +58,7 @@ namespace Tp.Core
 				return EqualityComparer<TLeft>.Default.Equals(this.Value, other.Value);
 			}
 
-			public override bool Equals(object obj)
+			public override bool Equals(object? obj)
 			{
 				return Equals(obj as Left<TLeft, TRight>);
 			}
@@ -87,7 +87,7 @@ namespace Tp.Core
 
 			public void Switch(Action<TLeft> caseLeft, Action<TRight> caseRight) => caseRight(Value);
 
-			public bool Equals(Right<TLeft, TRight> other)
+			public bool Equals(Right<TLeft, TRight>? other)
 			{
 				if (other == this)
 					return true;
@@ -96,7 +96,7 @@ namespace Tp.Core
 				return EqualityComparer<TRight>.Default.Equals(Value, other.Value);
 			}
 
-			public override bool Equals(object obj)
+			public override bool Equals(object? obj)
 			{
 				return Equals(obj as Right<TLeft, TRight>);
 			}
