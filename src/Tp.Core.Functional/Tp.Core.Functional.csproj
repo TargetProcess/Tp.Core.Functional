@@ -1,30 +1,27 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard1.0;net45</TargetFrameworks>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-    <Version>0.1.7</Version>
+    <TargetFramework>netstandard1.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Targetprocess</Authors>
     <Company>Targetprocess</Company>
     <Description>This package includes implementation of Maybe, Try, Either with set of utility extension methods.</Description>
     <RepositoryUrl>https://github.com/TargetProcess/Tp.Core.Functional</RepositoryUrl>
     <PackageProjectUrl>https://github.com/TargetProcess/Tp.Core.Functional</PackageProjectUrl>
-    <PackageLicenseUrl>http://opensource.org/licenses/MIT</PackageLicenseUrl>
-    <Copyright>Copyright Targetprocess 2018</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Copyright>Copyright Targetprocess 2020</Copyright>
     <PackageTags>maybe either try functional</PackageTags>
     <NeutralLanguage />
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>TpPublic.snk</AssemblyOriginatorKeyFile>
-    <PublicSign Condition=" '$(OS)' != 'Windows_NT' ">true</PublicSign>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(DebugType)' == 'portable'">
-    <SourceLinkCreate>true</SourceLinkCreate>
-    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    <TreatSpecificWarningsAsErrors />
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="SourceLink.Create.CommandLine" Version="2.8.1" PrivateAssets="All" />
-  </ItemGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    <TreatSpecificWarningsAsErrors />
+  </PropertyGroup>
 
 </Project>

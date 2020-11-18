@@ -1,7 +1,0 @@
-language: csharp
-sudo: false
-mono: none
-dotnet: 2.1.4
-solution: src/Tp.Core.Functional.sln
-script:
-  - dotnet test src/Tp.Core.Functional.Tests
