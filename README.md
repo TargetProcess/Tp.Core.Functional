@@ -1,7 +1,10 @@
-[![Build Status](https://travis-ci.org/TargetProcess/Tp.Core.Functional.svg)](https://travis-ci.org/TargetProcess/Tp.Core.Functional)
 # Tp.Core.Functional
 
 Tp.Core.Functional contains implementations of Maybe monad, Try monad and Either type.
+
+## Note for Github users
+
+Primary source-of-truth repository is hosted on internal GitLab. Github repository is a read-only mirror.
 
 ## Maybe monad
 
@@ -13,7 +16,7 @@ Usages:
 var i = Maybe.Just(1); // Create a value
 var m = i.Select(x=>x*2); // map value, result is Just(2)
 var f = m.Where(x=>x%2==1); // filter value, result is Nothing
-var n = m.Bind(x=>Maybe.Just(2*x)) // flatMap (or bind) value, result is Just(4) 
+var n = m.Bind(x=>Maybe.Just(2*x)) // flatMap (or bind) value, result is Just(4)
 ```
 
 Tp.Functional.Core does not require to specify a type of `Maybe.Nothing`:
@@ -40,7 +43,7 @@ See more [here](https://github.com/TargetProcess/Tp.Core.Functional/wiki/Either)
 
 A Try wraps a computation that could either result in a value or in an exception being thrown:
 
-```csharp 
+```csharp
 var tryResult = Try.Create(()=>int.Parse(value));
 
 var m = try.Select(x=>x*2);
