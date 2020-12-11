@@ -10,6 +10,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "attached", "attached", "{F50B34CE-435E-40DB-BCAA-DAA6EE518327}"
 ProjectSection(SolutionItems) = preProject
 	..\README.md = ..\README.md
+	..\CHANGELOG.md = ..\CHANGELOG.md
 EndProjectSection
 EndProject
 Global
